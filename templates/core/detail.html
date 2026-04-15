@@ -1,0 +1,197 @@
+{% extends "core/base.html" %}
+{% load bingelink_tags %}
+
+{% block title %}
+  {% with title=item|media_title year=item|media_year %}
+    {{ title }} ({{ year }}) — BingeLink
+  {% endwith %}
+{% endblock %}
+{% block meta_description %}Find where to watch {{ item|media_title }} legally. Stream on Netflix, Prime Video, Disney+ and more.{% endblock %}
+
+{% block content %}
+
+{% with title=item|media_title year=item|media_year rating=item.vote_average %}
+
+<!-- ── Backdrop ────────────────────────────────────────────────────────── -->
+{% if backdrop_url %}
+<div class="relative h-[420px] md:h-[500px] overflow-hidden -mt-0">
+  <img src="{{ backdrop_url }}" alt="{{ title }} backdrop"
+       class="w-full h-full object-cover object-top opacity-40" />
+  <div class="absolute inset-0 backdrop-overlay"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent"></div>
+</div>
+{% endif %}
+
+<!-- ── Detail Content ──────────────────────────────────────────────────── -->
+<div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 {% if backdrop_url %}-mt-64 relative z-10{% else %}pt-6 sm:pt-12{% endif %} pb-8 sm:pb-16">
+  <div class="flex flex-col md:flex-row gap-8 sm:gap-10">
+
+    <!-- Poster -->
+    <div class="flex-shrink-0 flex justify-center md:block">
+      {% if poster_url %}
+        <img src="{{ poster_url }}" alt="{{ title }} poster"
+             class="w-48 sm:w-56 rounded-2xl shadow-card border border-border"
+             id="detail-poster" />
+      {% else %}
+        <div class="poster-placeholder w-48 sm:w-56 rounded-2xl border border-border">
+          <svg class="w-16 h-16 text-border" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4"/>
+          </svg>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Info -->
+    <div class="flex-1 min-w-0">
+
+      <!-- Title + Badges -->
+      <div class="flex flex-wrap items-start gap-3 mb-3">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-text-primary leading-tight" id="detail-title">
+          {{ title }}
+        </h1>
+        <span class="mt-2 px-3 py-1 rounded-full bg-surface border border-border text-xs font-medium text-text-muted capitalize">
+          {{ media_type }}
+        </span>
+      </div>
+
+      <!-- Meta row -->
+      <div class="flex flex-wrap items-center gap-3 mb-4 text-sm text-text-muted">
+        <span id="detail-year">{{ year }}</span>
+        {% if item.runtime %}
+          <span class="flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+            </svg>
+            {{ item.runtime }}m
+          </span>
+        {% endif %}
+        {% if item.number_of_seasons %}
+          <span>{{ item.number_of_seasons }} season{{ item.number_of_seasons|pluralize }}</span>
+        {% endif %}
+        {% if rating %}
+          <span class="rating-badge {{ rating|rating_class }}">★ {{ rating|floatformat:1 }}</span>
+        {% endif %}
+      </div>
+
+      <!-- Genres -->
+      {% if item.genres %}
+        <div class="flex flex-wrap gap-2 mb-5" id="detail-genres">
+          {% for genre in item.genres %}
+            <a href="{% url 'core:browse_genre' genre.id %}?type={{ media_type }}"
+               class="px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-accent text-xs font-medium hover:bg-accent/20 transition-colors">
+              {{ genre.name }}
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Tagline -->
+      {% if item.tagline %}
+        <p class="text-text-muted italic mb-3 text-sm border-l-2 border-accent pl-3">{{ item.tagline }}</p>
+      {% endif %}
+
+      <!-- Overview -->
+      {% if item.overview %}
+        <p class="text-text-muted leading-relaxed mb-8 max-w-2xl" id="detail-overview">{{ item.overview }}</p>
+      {% endif %}
+
+      <!-- ── Where to Watch ─────────────────────────────────────────────── -->
+      <div id="providers-section">
+        <h2 class="section-title text-lg mb-5">Where to Watch</h2>
+
+        {% if providers.flatrate %}
+          <div class="mb-6">
+            <p class="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">Streaming (Subscription)</p>
+            <div class="flex flex-wrap gap-3" id="flatrate-providers">
+              {% for p in providers.flatrate %}
+                <a href="{{ justwatch_link }}" target="_blank" rel="noopener noreferrer"
+                   class="provider-badge w-full sm:w-auto justify-center sm:justify-start py-3 sm:py-2" id="provider-{{ p.provider_id }}"
+                   title="Watch on {{ p.provider_name }}">
+                  {% if p.logo_path %}
+                    <img src="{{ p.logo_path|tmdb_image:'w92' }}" alt="{{ p.provider_name }} logo" />
+                  {% endif %}
+                  <span>{{ p.provider_name }}</span>
+                  <svg class="w-3.5 h-3.5 text-text-muted ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if providers.rent %}
+          <div class="mb-6">
+            <p class="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">Rent</p>
+            <div class="flex flex-wrap gap-3" id="rent-providers">
+              {% for p in providers.rent %}
+                <a href="{{ justwatch_link }}" target="_blank" rel="noopener noreferrer"
+                   class="provider-badge w-full sm:w-auto justify-center sm:justify-start py-3 sm:py-2" id="provider-rent-{{ p.provider_id }}"
+                   title="Rent on {{ p.provider_name }}">
+                  {% if p.logo_path %}
+                    <img src="{{ p.logo_path|tmdb_image:'w92' }}" alt="{{ p.provider_name }} logo" />
+                  {% endif %}
+                  <span>{{ p.provider_name }}</span>
+                  <svg class="w-3.5 h-3.5 text-text-muted ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if providers.buy %}
+          <div class="mb-6">
+            <p class="text-xs font-semibold uppercase tracking-wider text-text-muted mb-3">Buy</p>
+            <div class="flex flex-wrap gap-3" id="buy-providers">
+              {% for p in providers.buy %}
+                <a href="{{ justwatch_link }}" target="_blank" rel="noopener noreferrer"
+                   class="provider-badge w-full sm:w-auto justify-center sm:justify-start py-3 sm:py-2" id="provider-buy-{{ p.provider_id }}"
+                   title="Buy on {{ p.provider_name }}">
+                  {% if p.logo_path %}
+                    <img src="{{ p.logo_path|tmdb_image:'w92' }}" alt="{{ p.provider_name }} logo" />
+                  {% endif %}
+                  <span>{{ p.provider_name }}</span>
+                  <svg class="w-3.5 h-3.5 text-text-muted ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if not providers.flatrate and not providers.rent and not providers.buy %}
+          <div class="flex items-center gap-3 p-5 rounded-xl bg-card border border-border text-text-muted">
+            <svg class="w-8 h-8 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M9.172 16.172a4 4 0 0 1 5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+            </svg>
+            <div>
+              <p class="font-medium text-text-primary">Not currently available</p>
+              <p class="text-sm">No streaming info available for your region (US) right now.</p>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if justwatch_link %}
+          <div class="mt-6">
+            <a href="{{ justwatch_link }}" target="_blank" rel="noopener noreferrer"
+               class="btn-outline text-sm" id="justwatch-link">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+              Check all options on JustWatch
+            </a>
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endwith %}
+{% endblock %}

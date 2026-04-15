@@ -1,0 +1,116 @@
+{% extends "core/base.html" %}
+{% load bingelink_tags %}
+
+{% block title %}BingeLink — Discover What to Watch Tonight{% endblock %}
+{% block meta_description %}Find movies, TV shows and anime. See where to stream them legally on Netflix, Prime Video, Disney+ and more.{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+<section class="hero-gradient relative overflow-hidden">
+  <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 md:py-36 text-center">
+
+    <!-- Glow orb -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-accent opacity-10 blur-[120px] rounded-full pointer-events-none"></div>
+
+    <div class="relative z-10">
+      <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-sm font-medium mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-green animate-pulse"></span>
+        Legal streaming only
+      </span>
+
+      <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-text-primary mb-4 sm:mb-6 leading-tight">
+        Find What to Watch<br />
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-purple-400">
+          Across Every Platform
+        </span>
+      </h1>
+
+      <p class="text-base sm:text-lg text-text-muted max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+        Search millions of movies, TV shows and anime. Instantly see which legal streaming services carry them — Netflix, Prime Video, Disney+, Crunchyroll and more.
+      </p>
+
+      <!-- Hero Search -->
+      <form action="{% url 'core:search' %}" method="get" class="max-w-2xl mx-auto" id="hero-search-form">
+        <div class="relative group">
+          <input
+            type="text"
+            name="q"
+            placeholder="Search any movie, show or anime…"
+            id="hero-search-input"
+            autocomplete="off"
+            class="w-full bg-card/80 backdrop-blur border border-border rounded-2xl px-4 py-3 pl-12 sm:px-6 sm:py-4 sm:pl-14 text-sm sm:text-base text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-300 group-hover:border-accent/40"
+          />
+          <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+          </svg>
+          <button type="submit" id="hero-search-btn"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 btn-accent py-2 px-5 text-sm">
+            Search
+          </button>
+        </div>
+      </form>
+
+      <!-- Provider logos strip -->
+      <div class="flex items-center justify-center gap-3 mt-10 flex-wrap">
+        <span class="text-xs text-text-muted uppercase tracking-wider">Streaming on</span>
+        {% for name in providers_strip %}
+          <span class="px-3 py-1 rounded-lg bg-card border border-border text-xs text-text-muted font-medium">{{ name }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Trending Movies Rail ───────────────────────────────────────────────── -->
+<section class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="section-title">Trending Movies</h2>
+    <a href="{% url 'core:popular' %}" class="text-sm text-accent hover:underline font-medium" id="view-all-movies">View all →</a>
+  </div>
+  <div class="scroll-rail">
+    {% for item in trending_movies %}
+      {% with media_type="movie" %}
+        {% include "partials/media_card.html" %}
+      {% endwith %}
+    {% empty %}
+      <p class="text-text-muted text-sm">No trending movies right now.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ── Trending TV Rail ───────────────────────────────────────────────────── -->
+<section class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="section-title">Trending TV Shows</h2>
+    <a href="{% url 'core:popular' %}?type=tv" class="text-sm text-accent hover:underline font-medium" id="view-all-tv">View all →</a>
+  </div>
+  <div class="scroll-rail">
+    {% for item in trending_tv %}
+      {% with media_type="tv" %}
+        {% include "partials/media_card.html" %}
+      {% endwith %}
+    {% empty %}
+      <p class="text-text-muted text-sm">No trending shows right now.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ── Anime Rail ────────────────────────────────────────────────────────── -->
+<section class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 mb-16">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="section-title">Popular Anime</h2>
+    <a href="{% url 'core:browse_genre' 16 %}?type=tv" class="text-sm text-accent hover:underline font-medium" id="view-all-anime">View all →</a>
+  </div>
+  <div class="scroll-rail">
+    {% for item in anime %}
+      {% with media_type="tv" %}
+        {% include "partials/media_card.html" %}
+      {% endwith %}
+    {% empty %}
+      <p class="text-text-muted text-sm">No anime right now.</p>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

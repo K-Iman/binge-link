@@ -1,0 +1,216 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{% block meta_description %}BingeLink — Discover movies, TV shows and anime. Find where to stream legally.{% endblock %}" />
+  <title>{% block title %}BingeLink — Discover What to Watch{% endblock %}</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg:      '#0B0F19',
+            surface: '#131929',
+            card:    '#1A2236',
+            border:  '#252D42',
+            accent:  '#6D5EF7',
+            'accent-hover': '#5B4DE0',
+            green:   '#22C55E',
+            yellow:  '#EAB308',
+            red:     '#EF4444',
+            'text-primary': '#E5E7EB',
+            'text-muted':   '#9CA3AF',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          backgroundImage: {
+            'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+          },
+          boxShadow: {
+            card:  '0 4px 24px rgba(0,0,0,0.4)',
+            glow:  '0 0 20px rgba(109,94,247,0.35)',
+            'glow-sm': '0 0 10px rgba(109,94,247,0.2)',
+          },
+          keyframes: {
+            shimmer: {
+              '0%':   { backgroundPosition: '-1000px 0' },
+              '100%': { backgroundPosition: '1000px 0' },
+            },
+            fadeIn: {
+              from: { opacity: '0', transform: 'translateY(12px)' },
+              to:   { opacity: '1', transform: 'translateY(0)' },
+            },
+          },
+          animation: {
+            shimmer: 'shimmer 2s infinite linear',
+            'fade-in': 'fadeIn 0.4s ease forwards',
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- HTMX -->
+  <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'css/bingelink.css' %}" />
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-bg text-text-primary font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- ── Navigation ────────────────────────────────────────────────────────── -->
+  <nav class="sticky top-0 z-50 border-b border-border bg-bg/90 backdrop-blur-md">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+
+        <!-- Logo -->
+        <a href="{% url 'core:home' %}" class="flex items-center gap-2 group" id="nav-logo">
+          <div class="w-8 h-8 rounded-lg bg-accent flex items-center justify-center shadow-glow-sm group-hover:shadow-glow transition-shadow duration-300">
+            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M4 6l4-2 4 2 4-2 4 2v14l-4-2-4 2-4-2-4 2V6z"/>
+            </svg>
+          </div>
+          <span class="text-xl font-bold tracking-tight">
+            Binge<span class="text-accent">Link</span>
+          </span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-1">
+          <a href="{% url 'core:home' %}" id="nav-home"
+             class="px-4 py-2 rounded-lg text-sm font-medium text-text-muted hover:text-text-primary hover:bg-card transition-all duration-200">
+            Home
+          </a>
+          <a href="{% url 'core:library' %}" id="nav-library"
+             class="px-4 py-2 rounded-lg text-sm font-medium text-text-muted hover:text-text-primary hover:bg-card transition-all duration-200">
+            Library
+          </a>
+          <a href="{% url 'core:popular' %}" id="nav-popular"
+             class="px-4 py-2 rounded-lg text-sm font-medium text-text-muted hover:text-text-primary hover:bg-card transition-all duration-200">
+            Popular
+          </a>
+          <a href="{% url 'core:popular' %}?type=tv" id="nav-tv"
+             class="px-4 py-2 rounded-lg text-sm font-medium text-text-muted hover:text-text-primary hover:bg-card transition-all duration-200">
+            TV Shows
+          </a>
+          <a href="{% url 'core:browse_genre' 16 %}?type=tv" id="nav-anime"
+             class="px-4 py-2 rounded-lg text-sm font-medium text-text-muted hover:text-text-primary hover:bg-card transition-all duration-200">
+            Anime
+          </a>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex items-center gap-3">
+          <form action="{% url 'core:search' %}" method="get" class="relative hidden md:block" id="nav-search-form">
+            <input
+              type="text"
+              name="q"
+              placeholder="Search movies, shows…"
+              value="{{ query|default:'' }}"
+              autocomplete="off"
+              id="nav-search-input"
+              class="w-52 lg:w-72 bg-card border border-border rounded-xl px-4 py-2 pl-10 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all duration-200"
+              hx-get="{% url 'core:search' %}"
+              hx-trigger="keyup changed delay:400ms"
+              hx-target="#search-dropdown"
+              hx-include="[name='q']"
+              hx-vals='{"partial": "1"}'
+            />
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+            </svg>
+            <!-- Live dropdown -->
+            <div id="search-dropdown" class="absolute top-full mt-2 w-full z-50"></div>
+          </form>
+
+          <!-- Mobile icons (Search + Hamburger) -->
+          <div class="flex items-center gap-1 md:hidden">
+            <a href="{% url 'core:search' %}" id="mobile-search-btn"
+               class="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-card transition-all duration-200">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+              </svg>
+            </a>
+            <button id="mobile-menu-btn" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
+                    class="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-card transition-all duration-200">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Collapsible Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-border bg-bg/95 backdrop-blur-md">
+      <div class="px-4 py-3 space-y-1">
+        <a href="{% url 'core:home' %}" class="block px-3 py-2 rounded-lg text-base font-medium text-text-muted hover:text-text-primary hover:bg-card">Home</a>
+        <a href="{% url 'core:library' %}" class="block px-3 py-2 rounded-lg text-base font-medium text-text-muted hover:text-text-primary hover:bg-card">Library</a>
+        <a href="{% url 'core:popular' %}" class="block px-3 py-2 rounded-lg text-base font-medium text-text-muted hover:text-text-primary hover:bg-card">Popular</a>
+        <a href="{% url 'core:popular' %}?type=tv" class="block px-3 py-2 rounded-lg text-base font-medium text-text-muted hover:text-text-primary hover:bg-card">TV Shows</a>
+        <a href="{% url 'core:browse_genre' 16 %}?type=tv" class="block px-3 py-2 rounded-lg text-base font-medium text-text-muted hover:text-text-primary hover:bg-card">Anime</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Page Content ──────────────────────────────────────────────────────── -->
+  <main class="flex-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ── Footer ────────────────────────────────────────────────────────────── -->
+  <footer class="border-t border-border mt-20">
+    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-7 h-7 rounded-lg bg-accent flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M4 6l4-2 4 2 4-2 4 2v14l-4-2-4 2-4-2-4 2V6z"/>
+              </svg>
+            </div>
+            <span class="font-bold">Binge<span class="text-accent">Link</span></span>
+          </div>
+          <p class="text-text-muted text-sm leading-relaxed">
+            Discover movies, TV shows, and anime. Find where to stream them legally.
+          </p>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-text-muted mb-4">Discover</h3>
+          <ul class="space-y-2 text-sm">
+            <li><a href="{% url 'core:popular' %}" class="text-text-muted hover:text-accent transition-colors">Popular Movies</a></li>
+            <li><a href="{% url 'core:popular' %}?type=tv" class="text-text-muted hover:text-accent transition-colors">Top TV Shows</a></li>
+            <li><a href="{% url 'core:browse_genre' 16 %}?type=tv" class="text-text-muted hover:text-accent transition-colors">Anime</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wider text-text-muted mb-4">Legal</h3>
+          <p class="text-text-muted text-sm leading-relaxed">
+            Movie data from <a href="https://www.themoviedb.org" target="_blank" rel="noopener" class="text-accent hover:underline">TMDB</a>.
+            Provider data powered by JustWatch. BingeLink does not host or stream any content.
+          </p>
+        </div>
+      </div>
+      <div class="border-t border-border mt-8 pt-8 text-center text-text-muted text-xs">
+        © 2026 BingeLink. Built for discovery, not streaming.
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+{% load bingelink_tags %}
+{% with title=item|media_title year=item|media_year rating=item.vote_average %}
+<a href="{% if media_type == 'movie' %}{% url 'core:movie_detail' item.id %}{% else %}{% url 'core:tv_detail' item.id %}{% endif %}"
+   class="media-card block w-44 sm:w-48"
+   id="card-{{ media_type }}-{{ item.id }}">
+
+  <!-- Poster -->
+  {% if item.poster_path %}
+    <img src="{{ item.poster_path|tmdb_image:'w342' }}"
+         alt="{{ title }} poster"
+         class="w-full aspect-[2/3] object-cover"
+         loading="lazy" />
+  {% else %}
+    <div class="poster-placeholder w-full">
+      <svg class="w-12 h-12 text-border" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1z"/>
+      </svg>
+    </div>
+  {% endif %}
+
+  <!-- Card Overlay -->
+  <div class="card-overlay"></div>
+
+  <!-- Info -->
+  <div class="p-3">
+    <div class="flex items-start justify-between gap-1 mb-1">
+      <h3 class="text-sm font-semibold leading-tight line-clamp-2 text-text-primary">{{ title }}</h3>
+    </div>
+    <div class="flex items-center gap-2 mt-1">
+      <span class="text-xs text-text-muted">{{ year }}</span>
+      {% if rating %}
+        <span class="rating-badge {{ rating|rating_class }}">
+          ★ {{ rating|floatformat:1 }}
+        </span>
+      {% endif %}
+      <span class="ml-auto text-xs px-2 py-0.5 rounded-full bg-surface border border-border text-text-muted capitalize">
+        {{ media_type }}
+      </span>
+    </div>
+  </div>
+</a>
+{% endwith %}

@@ -1,0 +1,48 @@
+{% extends "core/base.html" %}
+{% load bingelink_tags %}
+
+{% block title %}Browse Genre — BingeLink{% endblock %}
+
+{% block content %}
+<div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+  <h1 class="section-title text-2xl mb-8">Browse by Genre</h1>
+
+  <!-- Genre chips -->
+  <div class="flex flex-wrap gap-2 mb-10" id="genre-filter">
+    {% for g in genres %}
+      <a href="{% url 'core:browse_genre' g.id %}?type={{ media_type }}"
+         id="genre-{{ g.id }}"
+         class="px-4 py-2 rounded-xl text-sm font-medium border transition-all duration-200
+           {% if g.id == genre_id %}bg-accent text-white border-accent shadow-glow-sm{% else %}bg-card border-border text-text-muted hover:border-accent hover:text-text-primary{% endif %}">
+        {{ g.name }}
+      </a>
+    {% endfor %}
+  </div>
+
+  <!-- Grid -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5" id="genre-grid">
+    {% for item in items %}
+    <a href="{% if media_type == 'movie' %}{% url 'core:movie_detail' item.id %}{% else %}{% url 'core:tv_detail' item.id %}{% endif %}"
+       class="media-card block animate-fade-in" id="genre-card-{{ item.id }}">
+      {% if item.poster_path %}
+        <img src="{{ item.poster_path|tmdb_image:'w342' }}" alt="{{ item|media_title }}"
+             class="w-full aspect-[2/3] object-cover rounded-t-xl" loading="lazy" />
+      {% else %}
+        <div class="poster-placeholder rounded-t-xl"></div>
+      {% endif %}
+      <div class="p-3">
+        <h3 class="text-sm font-semibold line-clamp-2 text-text-primary mb-1">{{ item|media_title }}</h3>
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-text-muted">{{ item|media_year }}</span>
+          {% if item.vote_average %}<span class="rating-badge {{ item.vote_average|rating_class }}">★ {{ item.vote_average|floatformat:1 }}</span>{% endif %}
+        </div>
+      </div>
+    </a>
+    {% empty %}
+      <p class="col-span-full text-center text-text-muted py-20">No results for this genre.</p>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

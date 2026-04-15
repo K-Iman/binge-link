@@ -1,0 +1,1 @@
+web: gunicorn bingelink.wsgi

@@ -1,0 +1,75 @@
+{% extends "core/base.html" %}
+{% load bingelink_tags %}
+
+{% block title %}Popular {{ media_type|capfirst }} — BingeLink{% endblock %}
+{% block meta_description %}Browse popular movies and TV shows on BingeLink. Find where to stream legally.{% endblock %}
+
+{% block content %}
+<div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+    <h1 class="section-title text-2xl">
+      Popular {% if media_type == "tv" %}TV Shows{% else %}Movies{% endif %}
+    </h1>
+    <!-- Type toggle -->
+    <div class="flex items-center bg-card border border-border rounded-xl p-1 gap-1" id="type-toggle">
+      <a href="{% url 'core:popular' %}?type=movie" id="toggle-movies"
+         class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 {% if media_type == 'movie' %}bg-accent text-white shadow-glow-sm{% else %}text-text-muted hover:text-text-primary{% endif %}">
+        Movies
+      </a>
+      <a href="{% url 'core:popular' %}?type=tv" id="toggle-tv"
+         class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 {% if media_type == 'tv' %}bg-accent text-white shadow-glow-sm{% else %}text-text-muted hover:text-text-primary{% endif %}">
+        TV Shows
+      </a>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <div id="popular-grid"
+       class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+    {% for item in items %}
+      {% include "partials/search_results.html" with results=items|slice:"0:0" %}
+    {% endfor %}
+    {% for item in items %}
+    <a href="{% if media_type == 'movie' %}{% url 'core:movie_detail' item.id %}{% else %}{% url 'core:tv_detail' item.id %}{% endif %}"
+       class="media-card block animate-fade-in" id="pop-card-{{ item.id }}">
+      {% if item.poster_path %}
+        <img src="{{ item.poster_path|tmdb_image:'w342' }}" alt="{{ item|media_title }}"
+             class="w-full aspect-[2/3] object-cover rounded-t-xl" loading="lazy" />
+      {% else %}
+        <div class="poster-placeholder rounded-t-xl">
+          <svg class="w-10 h-10 text-border" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4"/>
+          </svg>
+        </div>
+      {% endif %}
+      <div class="p-3">
+        <h3 class="text-sm font-semibold line-clamp-2 text-text-primary mb-1">{{ item|media_title }}</h3>
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-text-muted">{{ item|media_year }}</span>
+          {% if item.vote_average %}<span class="rating-badge {{ item.vote_average|rating_class }}">★ {{ item.vote_average|floatformat:1 }}</span>{% endif %}
+        </div>
+      </div>
+    </a>
+    {% empty %}
+      <p class="col-span-full text-center text-text-muted py-20">No content found.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if total_pages > 1 %}
+    <div class="flex items-center justify-center gap-3 mt-12" id="popular-pagination">
+      {% if page > 1 %}
+        <a href="?type={{ media_type }}&page={{ page|add:-1 }}" class="btn-outline text-sm">← Previous</a>
+      {% endif %}
+      <span class="text-text-muted text-sm">Page {{ page }} of {{ total_pages }}</span>
+      {% if page < total_pages %}
+        <a href="?type={{ media_type }}&page={{ page|add:1 }}" class="btn-accent text-sm">Next →</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

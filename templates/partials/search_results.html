@@ -1,0 +1,41 @@
+{% load bingelink_tags %}
+{% for item in results %}
+  {% with mt=item.media_type|default:"movie" %}
+  <a href="{% if item.media_type == 'movie' %}{% url 'core:movie_detail' item.id %}{% else %}{% url 'core:tv_detail' item.id %}{% endif %}"
+     class="media-card block animate-fade-in"
+     id="search-card-{{ item.id }}">
+    {% if item.poster_path %}
+      <img src="{{ item.poster_path|tmdb_image:'w342' }}"
+           alt="{{ item|media_title }} poster"
+           class="w-full aspect-[2/3] object-cover rounded-t-xl"
+           loading="lazy" />
+    {% else %}
+      <div class="poster-placeholder rounded-t-xl">
+        <svg class="w-10 h-10 text-border" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4"/>
+        </svg>
+      </div>
+    {% endif %}
+    <div class="p-3">
+      <h3 class="text-sm font-semibold line-clamp-2 text-text-primary mb-1">{{ item|media_title }}</h3>
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-text-muted">{{ item|media_year }}</span>
+        {% if item.vote_average %}
+          <span class="rating-badge {{ item.vote_average|rating_class }}">★ {{ item.vote_average|floatformat:1 }}</span>
+        {% endif %}
+        <span class="ml-auto text-xs px-2 py-0.5 rounded-full bg-surface border border-border text-text-muted capitalize">{{ item.media_type|default:"movie" }}</span>
+      </div>
+    </div>
+  </a>
+  {% endwith %}
+{% empty %}
+  <div class="col-span-full flex flex-col items-center justify-center py-20 text-text-muted">
+    <svg class="w-16 h-16 mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+    </svg>
+    <p class="text-lg font-medium">No results found</p>
+    <p class="text-sm mt-1">Try a different search term</p>
+  </div>
+{% endfor %}
