@@ -2,7 +2,7 @@
 {% load bingelink_tags %}
 
 {% block title %}
-  {% if query %}Search: {{ query }} — BingeLink{% else %}Search Movies, TV & Anime — BingeLink{% endif %}
+  {% if query %}Search: {{ query }} — BingeLink{% else %}Search Movies, TV & Anime — BingeLink{% endblock %}
 {% endblock %}
 {% block meta_description %}Search results for {{ query }} on BingeLink. Find where to stream movies and TV shows legally.{% endblock %}
 
@@ -62,7 +62,7 @@
 
   <!-- Results Grid -->
   <div id="results-grid"
-       class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6 min-h-[300px]">
+       class="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6 min-h-[300px]">
     {% include "partials/search_results.html" %}
   </div>
 
