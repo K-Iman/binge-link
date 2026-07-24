@@ -1,0 +1,17 @@
+<div id="library-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
+  {% for item in items %}
+    {% with media_type=item.media_type|default:type %}
+      {% include "partials/media_card.html" %}
+    {% endwith %}
+  {% empty %}
+    <div class="col-span-full flex flex-col items-center justify-center py-20 px-4 text-center bg-surface border border-border rounded-2xl">
+      <div class="w-16 h-16 rounded-2xl bg-surface-elevated flex items-center justify-center mb-4">
+        <svg class="w-8 h-8 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 0 1 5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-white mb-2">No Matching Titles Found</h3>
+      <p class="text-sm text-text-muted max-w-md">We couldn't find any content matching your current filter criteria. Try resetting your filters or choosing a different release year.</p>
+    </div>
+  {% endfor %}
+</div>

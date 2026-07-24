@@ -1,0 +1,242 @@
+{% extends "core/base.html" %}
+{% load bingelink_tags %}
+
+{% block title %}
+  {% with title=item|media_title year=item|media_year %}
+    {{ title }} ({{ year }}) — Where to Stream Legally | BingeLink
+  {% endwith %}
+{% endblock %}
+{% block meta_description %}Find where to watch {{ item|media_title }} legally. Compare streaming options on Netflix, Prime Video, Disney+, Crunchyroll, Apple TV+ and more.{% endblock %}
+
+{% block content %}
+
+{% with title=item|media_title year=item|media_year rating=item.vote_average %}
+
+<!-- ── Ambient Backdrop Header ───────────────────────────────────────────── -->
+{% if backdrop_url %}
+<div class="relative h-[380px] sm:h-[460px] md:h-[520px] w-full overflow-hidden">
+  <img src="{{ backdrop_url }}" alt="{{ title }} backdrop"
+       class="w-full h-full object-cover object-center opacity-30 scale-105 filter blur-[2px]" />
+  <div class="absolute inset-0 backdrop-overlay"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-bg via-bg/60 to-transparent"></div>
+</div>
+{% endif %}
+
+<!-- ── Detail Content Container ─────────────────────────────────────────── -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 {% if backdrop_url %}-mt-56 sm:-mt-64 relative z-10{% else %}pt-8 sm:pt-12{% endif %} pb-16">
+  
+  <div class="flex flex-col md:flex-row gap-8 lg:gap-12 items-start">
+
+    <!-- Left Column: Media Poster -->
+    <div class="flex-shrink-0 w-full sm:w-64 md:w-72 mx-auto md:mx-0">
+      <div class="relative group rounded-2xl overflow-hidden shadow-2xl border border-border/80 bg-surface">
+        {% if poster_url %}
+          <img src="{{ poster_url }}" alt="{{ title }} poster"
+               class="w-full aspect-[2/3] object-cover"
+               id="detail-poster" />
+        {% else %}
+          <div class="poster-placeholder w-full aspect-[2/3] rounded-2xl flex flex-col items-center justify-center p-6 text-center">
+            <svg class="w-16 h-16 text-text-muted/40 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4"/>
+            </svg>
+            <span class="text-xs font-semibold text-text-muted">No Poster Available</span>
+          </div>
+        {% endif %}
+
+        {% if rating %}
+          <div class="absolute top-3 left-3 z-10">
+            <span class="rating-badge {{ rating|rating_class }} text-sm px-3 py-1 shadow-lg">
+              ★ {{ rating|floatformat:1 }}
+            </span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right Column: Media Details & Availability -->
+    <div class="flex-1 min-w-0 space-y-6">
+
+      <!-- Header & Badges -->
+      <div class="space-y-3">
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="px-3 py-1 rounded-full bg-accent/15 border border-accent/30 text-accent text-xs font-bold uppercase tracking-wider">
+            {{ media_type }}
+          </span>
+          {% if year %}
+            <span class="text-sm font-semibold text-text-muted">{{ year }}</span>
+          {% endif %}
+          {% if item.runtime %}
+            <span class="text-sm font-semibold text-text-muted flex items-center gap-1">
+              <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+              {{ item.runtime }}m
+            </span>
+          {% endif %}
+          {% if item.number_of_seasons %}
+            <span class="text-sm font-semibold text-text-muted flex items-center gap-1">
+              <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+              {{ item.number_of_seasons }} Season{{ item.number_of_seasons|pluralize }}
+            </span>
+          {% endif %}
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight tracking-tight" id="detail-title">
+          {{ title }}
+        </h1>
+
+        <!-- Genres Pills -->
+        {% if item.genres %}
+          <div class="flex flex-wrap gap-2 pt-1" id="detail-genres">
+            {% for genre in item.genres %}
+              <a href="{% url 'core:browse_genre' genre.id %}?type={{ media_type }}"
+                 class="px-3 py-1 rounded-xl bg-surface-elevated border border-border text-text-secondary text-xs font-semibold hover:border-accent hover:text-white transition-all">
+                {{ genre.name }}
+              </a>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Tagline -->
+      {% if item.tagline %}
+        <blockquote class="text-base text-text-secondary italic border-l-4 border-accent pl-4 py-1 bg-surface/50 rounded-r-xl">
+          "{{ item.tagline }}"
+        </blockquote>
+      {% endif %}
+
+      <!-- Overview -->
+      {% if item.overview %}
+        <div class="space-y-2">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-text-muted">Synopsis</h3>
+          <p class="text-text-secondary text-base leading-relaxed max-w-3xl" id="detail-overview">
+            {{ item.overview }}
+          </p>
+        </div>
+      {% endif %}
+
+      <hr class="border-border/80 my-8" />
+
+      <!-- ── Where to Watch (Provider Section) ───────────────────────────────── -->
+      <div id="providers-section" class="space-y-6">
+        
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-xl bg-accent/20 flex items-center justify-center">
+            <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          </div>
+          <h2 class="text-xl font-bold text-white">Where to Watch Legally</h2>
+        </div>
+
+        <!-- Subscription Streaming -->
+        {% if providers.flatrate %}
+          <div class="space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              Subscription Streaming
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="flatrate-providers">
+              {% for p in providers.flatrate %}
+                <a href="{{ justwatch_link|default:'https://www.justwatch.com/' }}" target="_blank" rel="noopener noreferrer"
+                   class="provider-badge shadow-md" id="provider-{{ p.provider_id }}"
+                   title="Stream on {{ p.provider_name }}">
+                  {% if p.logo_path %}
+                    <img src="{{ p.logo_path|tmdb_image:'w92' }}" alt="{{ p.provider_name }} logo" />
+                  {% endif %}
+                  <span class="truncate">{{ p.provider_name }}</span>
+                  <svg class="w-4 h-4 text-text-muted ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Rent Options -->
+        {% if providers.rent %}
+          <div class="space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              Rent Options
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="rent-providers">
+              {% for p in providers.rent %}
+                <a href="{{ justwatch_link|default:'https://www.justwatch.com/' }}" target="_blank" rel="noopener noreferrer"
+                   class="provider-badge shadow-md" id="provider-rent-{{ p.provider_id }}"
+                   title="Rent on {{ p.provider_name }}">
+                  {% if p.logo_path %}
+                    <img src="{{ p.logo_path|tmdb_image:'w92' }}" alt="{{ p.provider_name }} logo" />
+                  {% endif %}
+                  <span class="truncate">{{ p.provider_name }}</span>
+                  <svg class="w-4 h-4 text-text-muted ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Buy Options -->
+        {% if providers.buy %}
+          <div class="space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-cyan flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-cyan"></span>
+              Buy Digital Copy
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="buy-providers">
+              {% for p in providers.buy %}
+                <a href="{{ justwatch_link|default:'https://www.justwatch.com/' }}" target="_blank" rel="noopener noreferrer"
+                   class="provider-badge shadow-md" id="provider-buy-{{ p.provider_id }}"
+                   title="Buy on {{ p.provider_name }}">
+                  {% if p.logo_path %}
+                    <img src="{{ p.logo_path|tmdb_image:'w92' }}" alt="{{ p.provider_name }} logo" />
+                  {% endif %}
+                  <span class="truncate">{{ p.provider_name }}</span>
+                  <svg class="w-4 h-4 text-text-muted ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  </svg>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- Empty State fallback -->
+        {% if not providers.flatrate and not providers.rent and not providers.buy %}
+          <div class="flex items-center gap-4 p-6 rounded-2xl bg-surface border border-border text-text-muted">
+            <div class="w-12 h-12 rounded-xl bg-surface-elevated flex items-center justify-center flex-shrink-0">
+              <svg class="w-6 h-6 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                      d="M9.172 16.172a4 4 0 0 1 5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-white text-base">Not Currently Streaming</h4>
+              <p class="text-sm text-text-muted mt-0.5">No subscription, rent, or buy availability listed for US region right now.</p>
+            </div>
+          </div>
+        {% endif %}
+
+        <!-- JustWatch Full Availability Link -->
+        {% if justwatch_link %}
+          <div class="pt-4">
+            <a href="{{ justwatch_link }}" target="_blank" rel="noopener noreferrer"
+               class="btn-accent text-sm" id="justwatch-link">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+              </svg>
+              View Full Availability & Pricing on JustWatch
+            </a>
+          </div>
+        {% endif %}
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+{% endwith %}
+{% endblock %}

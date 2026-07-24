@@ -1,0 +1,39 @@
+{% extends "core/base.html" %}
+{% load bingelink_tags %}
+
+{% block title %}Browse Genres — BingeLink{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+  <!-- Header -->
+  <div class="flex items-center gap-3 mb-8">
+    <div class="w-2.5 h-8 rounded-full bg-accent"></div>
+    <h1 class="text-3xl font-black text-white tracking-tight">Browse by Genre</h1>
+  </div>
+
+  <!-- Genre Chips Strip -->
+  <div class="flex flex-wrap gap-2.5 mb-10" id="genre-filter">
+    {% for g in genres %}
+      <a href="{% url 'core:browse_genre' g.id %}?type={{ media_type }}"
+         id="genre-{{ g.id }}"
+         class="px-4 py-2 rounded-xl text-sm font-semibold border transition-all duration-200
+           {% if g.id == genre_id %}bg-accent text-white border-accent shadow-glow-sm scale-105{% else %}bg-surface border-border text-text-muted hover:border-accent/50 hover:text-white{% endif %}">
+        {{ g.name }}
+      </a>
+    {% endfor %}
+  </div>
+
+  <!-- Grid of Media Cards -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 sm:gap-6" id="genre-grid">
+    {% for item in items %}
+      {% include "partials/media_card.html" %}
+    {% empty %}
+      <div class="col-span-full flex flex-col items-center justify-center py-20 text-center bg-surface border border-border rounded-2xl">
+        <p class="text-text-muted text-base">No titles found for this genre selection.</p>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

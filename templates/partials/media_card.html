@@ -1,0 +1,49 @@
+{% load bingelink_tags %}
+{% with title=item|media_title year=item|media_year rating=item.vote_average %}
+<a href="{% if media_type == 'movie' %}{% url 'core:movie_detail' item.id %}{% else %}{% url 'core:tv_detail' item.id %}{% endif %}"
+   class="media-card block w-44 sm:w-48 group"
+   id="card-{{ media_type }}-{{ item.id }}">
+
+  <!-- Poster Image / Fallback -->
+  <div class="relative w-full aspect-[2/3] bg-surface-elevated overflow-hidden">
+    {% if item.poster_path %}
+      <img src="{{ item.poster_path|tmdb_image:'w342' }}"
+           alt="{{ title }} poster"
+           class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+           loading="lazy" />
+    {% else %}
+      <div class="poster-placeholder w-full h-full">
+        <svg class="w-12 h-12 text-text-muted/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1z"/>
+        </svg>
+      </div>
+    {% endif %}
+
+    <!-- Card Top Badge Overlay -->
+    <div class="absolute top-2 right-2 flex flex-col gap-1 items-end z-10">
+      {% if rating %}
+        <span class="rating-badge {{ rating|rating_class }} shadow-md">
+          ★ {{ rating|floatformat:1 }}
+        </span>
+      {% endif %}
+    </div>
+
+    <!-- Gradient Overlay on Hover -->
+    <div class="card-overlay"></div>
+  </div>
+
+  <!-- Card Info -->
+  <div class="p-3.5 flex flex-col justify-between flex-1 bg-surface">
+    <h3 class="text-sm font-bold leading-snug line-clamp-2 text-text-primary group-hover:text-accent transition-colors duration-200 mb-2">
+      {{ title }}
+    </h3>
+    <div class="flex items-center justify-between text-xs text-text-muted mt-auto pt-1 border-t border-border/50">
+      <span class="font-medium">{{ year }}</span>
+      <span class="px-2 py-0.5 rounded-full bg-surface-elevated border border-border text-[10px] font-bold tracking-wider uppercase text-text-muted">
+        {{ media_type }}
+      </span>
+    </div>
+  </div>
+</a>
+{% endwith %}

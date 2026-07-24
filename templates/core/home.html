@@ -1,0 +1,187 @@
+{% extends "core/base.html" %}
+{% load bingelink_tags %}
+
+{% block title %}BingeLink — Discover What to Watch Tonight{% endblock %}
+{% block meta_description %}Find movies, TV shows and anime. See where to stream them legally on Netflix, Prime Video, Disney+, Crunchyroll and Apple TV+.{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero Section ──────────────────────────────────────────────────────── -->
+<section class="hero-gradient relative pt-12 pb-20 sm:pt-20 sm:pb-28 overflow-hidden">
+  
+  <!-- Glowing Background Orbs -->
+  <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-accent/15 blur-[140px] rounded-full pointer-events-none"></div>
+  <div class="absolute top-1/3 left-1/3 w-[400px] h-[250px] bg-cyan/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+
+    <!-- Pill Badge -->
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/25 text-accent text-xs sm:text-sm font-semibold mb-6 shadow-glow-sm">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span>100% Legal & Official Streaming Guide</span>
+    </div>
+
+    <!-- Main Headline -->
+    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-white mb-6 leading-[1.1]">
+      Find Where Any Movie or Series<br class="hidden sm:block" />
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent via-purple-300 to-cyan">
+        Is Streaming Legally
+      </span>
+    </h1>
+
+    <p class="text-base sm:text-lg text-text-muted max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+      Search millions of movies, TV shows, and anime. Instantly compare legal watch options across Netflix, Disney+, Prime Video, Crunchyroll, and Apple TV+.
+    </p>
+
+    <!-- Large Centered Hero Search Bar -->
+    <form action="{% url 'core:search' %}" method="get" class="max-w-2xl mx-auto mb-10" id="hero-search-form">
+      <div class="relative group shadow-2xl rounded-2xl">
+        <input
+          type="text"
+          name="q"
+          placeholder="Search any movie, show or anime title…"
+          id="hero-search-input"
+          autocomplete="off"
+          class="w-full bg-surface/90 backdrop-blur-xl border border-border rounded-2xl px-5 py-4 pl-14 sm:pl-16 text-base sm:text-lg text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition-all duration-300 group-hover:border-accent/50 shadow-inner"
+        />
+        <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-text-muted group-hover:text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+        </svg>
+        <button type="submit" id="hero-search-btn"
+                class="absolute right-3 top-1/2 -translate-y-1/2 btn-accent py-2.5 px-6 text-sm sm:text-base font-bold">
+          Search
+        </button>
+      </div>
+    </form>
+
+    <!-- Provider Logos Strip -->
+    <div class="flex items-center justify-center gap-2.5 sm:gap-3 flex-wrap pt-2">
+      <span class="text-xs font-bold uppercase tracking-wider text-text-muted mr-2">Streaming Availability:</span>
+      {% for name in providers_strip %}
+        <span class="px-3.5 py-1.5 rounded-xl bg-surface/80 border border-border/80 text-xs text-text-secondary font-semibold hover:border-accent/40 transition-all">
+          {{ name }}
+        </span>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Popular Category Cards Strip ────────────────────────────────────── -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-20 mb-12">
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    
+    <a href="{% url 'core:popular' %}?type=movie" 
+       class="p-5 rounded-2xl bg-surface border border-border hover:border-accent hover:shadow-glow-sm transition-all duration-300 flex items-center gap-4 group">
+      <div class="w-12 h-12 rounded-xl bg-accent/15 border border-accent/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+        <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4"/></svg>
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-white group-hover:text-accent transition-colors">Movies</h3>
+        <p class="text-xs text-text-muted">Top blockbusters & classics</p>
+      </div>
+    </a>
+
+    <a href="{% url 'core:popular' %}?type=tv" 
+       class="p-5 rounded-2xl bg-surface border border-border hover:border-cyan hover:shadow-cyan transition-all duration-300 flex items-center gap-4 group">
+      <div class="w-12 h-12 rounded-xl bg-cyan/15 border border-cyan/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+        <svg class="w-6 h-6 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-white group-hover:text-cyan transition-colors">TV Shows</h3>
+        <p class="text-xs text-text-muted">Bingeable series & seasons</p>
+      </div>
+    </a>
+
+    <a href="{% url 'core:browse_genre' 16 %}?type=tv" 
+       class="p-5 rounded-2xl bg-surface border border-border hover:border-purple-400 hover:shadow-glow-sm transition-all duration-300 flex items-center gap-4 group">
+      <div class="w-12 h-12 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-white group-hover:text-purple-400 transition-colors">Anime</h3>
+        <p class="text-xs text-text-muted">Popular animated series</p>
+      </div>
+    </a>
+
+    <a href="{% url 'core:library' %}" 
+       class="p-5 rounded-2xl bg-surface border border-border hover:border-emerald-400 hover:shadow-glow-sm transition-all duration-300 flex items-center gap-4 group">
+      <div class="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+        <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v25a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10h18"/></svg>
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-white group-hover:text-emerald-400 transition-colors">Full Library</h3>
+        <p class="text-xs text-text-muted">Filter by year, rating & A-Z</p>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ── Trending Movies Rail ───────────────────────────────────────────────── -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-3">
+      <div class="w-2.5 h-7 rounded-full bg-accent"></div>
+      <h2 class="section-title">Trending Movies</h2>
+    </div>
+    <a href="{% url 'core:popular' %}?type=movie" class="text-sm font-semibold text-accent hover:text-accent-hover flex items-center gap-1 transition-colors" id="view-all-movies">
+      View all <span>→</span>
+    </a>
+  </div>
+  <div class="scroll-rail">
+    {% for item in trending_movies %}
+      {% with media_type="movie" %}
+        {% include "partials/media_card.html" %}
+      {% endwith %}
+    {% empty %}
+      <p class="text-text-muted text-sm py-8">No trending movies right now.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ── Trending TV Rail ───────────────────────────────────────────────────── -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-3">
+      <div class="w-2.5 h-7 rounded-full bg-cyan"></div>
+      <h2 class="section-title">Trending TV Shows</h2>
+    </div>
+    <a href="{% url 'core:popular' %}?type=tv" class="text-sm font-semibold text-cyan hover:underline flex items-center gap-1 transition-colors" id="view-all-tv">
+      View all <span>→</span>
+    </a>
+  </div>
+  <div class="scroll-rail">
+    {% for item in trending_tv %}
+      {% with media_type="tv" %}
+        {% include "partials/media_card.html" %}
+      {% endwith %}
+    {% empty %}
+      <p class="text-text-muted text-sm py-8">No trending TV shows right now.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ── Popular Anime Rail ─────────────────────────────────────────────────── -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 mb-20">
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-3">
+      <div class="w-2.5 h-7 rounded-full bg-purple-500"></div>
+      <h2 class="section-title">Popular Anime</h2>
+    </div>
+    <a href="{% url 'core:browse_genre' 16 %}?type=tv" class="text-sm font-semibold text-purple-400 hover:underline flex items-center gap-1 transition-colors" id="view-all-anime">
+      View all <span>→</span>
+    </a>
+  </div>
+  <div class="scroll-rail">
+    {% for item in anime %}
+      {% with media_type="tv" %}
+        {% include "partials/media_card.html" %}
+      {% endwith %}
+    {% empty %}
+      <p class="text-text-muted text-sm py-8">No anime right now.</p>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

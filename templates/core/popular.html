@@ -1,0 +1,66 @@
+{% extends "core/base.html" %}
+{% load bingelink_tags %}
+
+{% block title %}Popular {% if media_type == "tv" %}TV Shows{% else %}Movies{% endif %} — BingeLink{% endblock %}
+{% block meta_description %}Browse popular movies and TV shows on BingeLink. See where to stream legally.{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+  <!-- Header & Toggle Bar -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10 pb-6 border-b border-border/80">
+    <div class="flex items-center gap-3">
+      <div class="w-2.5 h-8 rounded-full bg-accent"></div>
+      <h1 class="text-3xl font-black text-white tracking-tight">
+        Popular {% if media_type == "tv" %}TV Shows{% else %}Movies{% endif %}
+      </h1>
+    </div>
+
+    <!-- Type Segment Toggle -->
+    <div class="flex items-center bg-surface border border-border p-1 rounded-2xl shadow-inner self-start sm:self-auto" id="type-toggle">
+      <a href="{% url 'core:popular' %}?type=movie" id="toggle-movies"
+         class="px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 {% if media_type == 'movie' %}bg-accent text-white shadow-glow-sm{% else %}text-text-muted hover:text-white{% endif %}">
+        Movies
+      </a>
+      <a href="{% url 'core:popular' %}?type=tv" id="toggle-tv"
+         class="px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 {% if media_type == 'tv' %}bg-accent text-white shadow-glow-sm{% else %}text-text-muted hover:text-white{% endif %}">
+        TV Shows
+      </a>
+    </div>
+  </div>
+
+  <!-- Grid of Media Cards -->
+  <div id="popular-grid"
+       class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 sm:gap-6">
+    {% for item in items %}
+      {% include "partials/media_card.html" %}
+    {% empty %}
+      <div class="col-span-full flex flex-col items-center justify-center py-20 text-center bg-surface border border-border rounded-2xl">
+        <p class="text-text-muted text-base">No content found.</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if total_pages > 1 %}
+    <div class="flex items-center justify-center gap-4 mt-14 pt-8 border-t border-border/80" id="popular-pagination">
+      {% if page > 1 %}
+        <a href="?type={{ media_type }}&page={{ page|add:-1 }}" class="btn-outline text-sm" id="prev-page">
+          ← Previous
+        </a>
+      {% endif %}
+      
+      <span class="text-text-muted text-sm font-semibold px-3 py-1.5 rounded-xl bg-surface border border-border">
+        Page <span class="text-white">{{ page }}</span> of {{ total_pages }}
+      </span>
+      
+      {% if page < total_pages %}
+        <a href="?type={{ media_type }}&page={{ page|add:1 }}" class="btn-accent text-sm" id="next-page">
+          Next →
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
