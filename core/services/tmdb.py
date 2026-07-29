@@ -8,7 +8,7 @@ Dual-mode design:
 Views NEVER import `requests` directly. All external data flows through here.
 """
 import logging
-from typing import Optional
+from typing import Optional, List, Dict, Any
 
 import requests
 from django.conf import settings
@@ -332,7 +332,6 @@ def search_multi(query: str, page: int = 1) -> dict:
         return {"results": results, "total_results": len(results), "total_pages": 1, "page": 1}
 
     data = _get("/search/multi", {"query": query, "page": page, "include_adult": "false"})
-    # Filter to movies and TV only
     data["results"] = [
         r for r in data.get("results", [])
         if r.get("media_type") in ("movie", "tv")
@@ -357,11 +356,97 @@ def get_tv(tv_id: int) -> dict:
     return _get(f"/tv/{tv_id}", {"append_to_response": "credits,videos"})
 
 
-def get_watch_providers(content_id: int, media_type: str, region: str = "US") -> dict:
-    """
-    Returns streaming provider data for the given content.
-    Always returns the `results` key shaped by region.
-    """
+def get_videos(content_id: int, media_type: str = "movie") -> dict:
+    """Fetch video trailers for a movie or TV show."""
+    if not _is_live():
+        return {
+            "results": [
+                {
+                    "id": "mock_trailer_1",
+                    "iso_639_1": "en",
+                    "iso_3166_1": "US",
+                    "name": "Official Trailer",
+                    "key": "dQw4w9WgXcQ",
+                    "site": "YouTube",
+                    "size": 1080,
+                    "type": "Trailer",
+                    "official": True,
+                }
+            ]
+        }
+    return _get(f"/{media_type}/{content_id}/videos")
+
+
+def select_best_trailer(videos_data: dict) -> Optional[dict]:
+    """Select the best YouTube trailer from a TMDB videos response dict."""
+    results = videos_data.get("results", [])
+    if not results:
+        return None
+
+    # Filter for YouTube videos
+    yt_videos = [v for v in results if v.get("site") == "YouTube"]
+    if not yt_videos:
+        return None
+
+    # 1. Official Trailers
+    official_trailers = [
+        v for v in yt_videos
+        if v.get("type") == "Trailer" and (v.get("official") or "official" in v.get("name", "").lower())
+    ]
+    if official_trailers:
+        return official_trailers[0]
+
+    # 2. Any Trailer
+    trailers = [v for v in yt_videos if v.get("type") == "Trailer"]
+    if trailers:
+        return trailers[0]
+
+    # 3. Teasers or fallback
+    teasers = [v for v in yt_videos if v.get("type") == "Teaser"]
+    if teasers:
+        return teasers[0]
+
+    return yt_videos[0]
+
+
+def get_credits(content_id: int, media_type: str = "movie") -> dict:
+    """Fetch credits (cast & crew) for a movie or TV show."""
+    if not _is_live():
+        return {
+            "cast": [
+                {"id": 1, "name": "Edward Norton", "character": "The Narrator", "profile_path": None},
+                {"id": 2, "name": "Brad Pitt", "character": "Tyler Durden", "profile_path": None},
+                {"id": 3, "name": "Helena Bonham Carter", "character": "Marla Singer", "profile_path": None},
+                {"id": 4, "name": "Meat Loaf", "character": "Robert 'Bob' Paulson", "profile_path": None},
+                {"id": 5, "name": "Jared Leto", "character": "Angel Face", "profile_path": None},
+            ]
+        }
+    return _get(f"/{media_type}/{content_id}/credits")
+
+
+def get_similar(content_id: int, media_type: str = "movie", page: int = 1) -> dict:
+    """Fetch similar titles."""
+    if not _is_live():
+        return {"results": MOCK_MOVIES if media_type == "movie" else MOCK_TV, "page": 1, "total_pages": 1}
+    return _get(f"/{media_type}/{content_id}/similar", {"page": page})
+
+
+def get_recommendations(content_id: int, media_type: str = "movie", page: int = 1) -> dict:
+    """Fetch recommended titles."""
+    if not _is_live():
+        return {"results": MOCK_MOVIES if media_type == "movie" else MOCK_TV, "page": 1, "total_pages": 1}
+    return _get(f"/{media_type}/{content_id}/recommendations", {"page": page})
+
+
+def get_top_rated(media_type: str = "movie", page: int = 1) -> dict:
+    """Fetch top rated movies or TV shows."""
+    if not _is_live():
+        return {"results": MOCK_MOVIES if media_type == "movie" else MOCK_TV, "page": 1, "total_pages": 1}
+    return _get(f"/{media_type}/top_rated", {"page": page})
+
+
+def get_watch_providers(content_id: int, media_type: str = "region_US", region: str = "US") -> dict:
+    """Returns streaming provider data for given content."""
     if not _is_live():
         return MOCK_PROVIDERS
 
@@ -436,8 +521,7 @@ def get_by_genre(genre_id: int, media_type: str = "movie", page: int = 1) -> dic
 
 
 def get_library_items(sort: str = "popularity", year: str = "", letter: str = "", media_type: str = "movie") -> dict:
-    """Fetch and filter library items. Dual-mode support."""
-    # 1) Determine sorting param
+    """Fetch and filter library items."""
     sort_map = {
         "popularity": "popularity.desc",
         "rating": "vote_average.desc",
@@ -446,7 +530,6 @@ def get_library_items(sort: str = "popularity", year: str = "", letter: str = ""
     tmdb_sort = sort_map.get(sort, "popularity.desc")
 
     if not _is_live():
-        # Mock filtering
         if media_type == "movie":
             base_items = MOCK_MOVIES
         elif media_type == "anime":
@@ -454,7 +537,6 @@ def get_library_items(sort: str = "popularity", year: str = "", letter: str = ""
         else:
             base_items = MOCK_TV
 
-        # Sort
         if sort == "rating":
             base_items = sorted(base_items, key=lambda x: x.get("vote_average", 0), reverse=True)
         elif sort == "release_date":
@@ -468,11 +550,9 @@ def get_library_items(sort: str = "popularity", year: str = "", letter: str = ""
             title = item.get("title") or item.get("name") or ""
             date_val = item.get("release_date") or item.get("first_air_date") or ""
             
-            # Filter by year
             if year and year not in date_val:
                 continue
                 
-            # Filter by letter
             if letter:
                 if letter.upper() == "#":
                     if title and not title[0].isalpha():
@@ -486,9 +566,7 @@ def get_library_items(sort: str = "popularity", year: str = "", letter: str = ""
             
         return {"results": results, "page": 1, "total_pages": 1}
 
-    # Live Mode
     params = {"sort_by": tmdb_sort, "page": 1}
-    
     api_type = "tv" if media_type in ("tv", "anime") else "movie"
     if media_type == "anime":
         params["with_genres"] = "16"
@@ -500,7 +578,6 @@ def get_library_items(sort: str = "popularity", year: str = "", letter: str = ""
 
     data = _get(f"/discover/{api_type}", params)
     
-    # Filter by letter locally since TMDB has no native string prefix filter
     if letter and data.get("results"):
         filtered = []
         for item in data.get("results"):
@@ -513,7 +590,6 @@ def get_library_items(sort: str = "popularity", year: str = "", letter: str = ""
         data["results"] = filtered
 
     return data
-
 
 
 def image_url(path: Optional[str], size: str = "w500") -> Optional[str]:

@@ -6,7 +6,7 @@
     {{ title }} ({{ year }}) — Where to Stream Legally | BingeLink
   {% endwith %}
 {% endblock %}
-{% block meta_description %}Find where to watch {{ item|media_title }} legally. Compare streaming options on Netflix, Prime Video, Disney+, Crunchyroll, Apple TV+ and more.{% endblock %}
+{% block meta_description %}Find where to watch {{ item|media_title }} legally. Compare official streaming options on Netflix, Prime Video, Disney+, Crunchyroll, Apple TV+ and more.{% endblock %}
 
 {% block content %}
 
@@ -23,12 +23,12 @@
 {% endif %}
 
 <!-- ── Detail Content Container ─────────────────────────────────────────── -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 {% if backdrop_url %}-mt-56 sm:-mt-64 relative z-10{% else %}pt-8 sm:pt-12{% endif %} pb-16">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 {% if backdrop_url %}-mt-56 sm:-mt-64 relative z-10{% else %}pt-8 sm:pt-12{% endif %} pb-20">
   
-  <div class="flex flex-col md:flex-row gap-8 lg:gap-12 items-start">
+  <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
 
-    <!-- Left Column: Media Poster -->
-    <div class="flex-shrink-0 w-full sm:w-64 md:w-72 mx-auto md:mx-0">
+    <!-- Left Column: Media Poster & Fast Actions -->
+    <div class="flex-shrink-0 w-full sm:w-64 md:w-72 mx-auto lg:mx-0 space-y-4">
       <div class="relative group rounded-2xl overflow-hidden shadow-2xl border border-border/80 bg-surface">
         {% if poster_url %}
           <img src="{{ poster_url }}" alt="{{ title }} poster"
@@ -52,12 +52,18 @@
           </div>
         {% endif %}
       </div>
+
+      <!-- Quick Action Jump Button -->
+      <a href="#where-to-watch" class="w-full btn-accent text-sm font-bold flex items-center justify-center gap-2 py-3 shadow-lg">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        <span>View Streaming Options</span>
+      </a>
     </div>
 
-    <!-- Right Column: Media Details & Availability -->
-    <div class="flex-1 min-w-0 space-y-6">
+    <!-- Right Column: Media Details, Embedded Trailer & Availability -->
+    <div class="flex-1 min-w-0 space-y-8">
 
-      <!-- Header & Badges -->
+      <!-- Title & Badges -->
       <div class="space-y-3">
         <div class="flex flex-wrap items-center gap-3">
           <span class="px-3 py-1 rounded-full bg-accent/15 border border-accent/30 text-accent text-xs font-bold uppercase tracking-wider">
@@ -99,7 +105,7 @@
 
       <!-- Tagline -->
       {% if item.tagline %}
-        <blockquote class="text-base text-text-secondary italic border-l-4 border-accent pl-4 py-1 bg-surface/50 rounded-r-xl">
+        <blockquote class="text-base text-text-secondary italic border-l-4 border-accent pl-4 py-1.5 bg-surface/50 rounded-r-xl">
           "{{ item.tagline }}"
         </blockquote>
       {% endif %}
@@ -114,16 +120,70 @@
         </div>
       {% endif %}
 
+      <!-- ── PROMINENT EMBEDDED TRAILER PLAYER (ABOVE THE FOLD) ──────────────── -->
+      <div class="space-y-3 pt-2" id="trailer-container">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-accent flex items-center gap-2">
+          <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Official Video Trailer
+        </h3>
+
+        {% if trailer %}
+          <div class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl border border-border bg-black">
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/{{ trailer.key }}?rel=0"
+              title="{{ title }} Trailer"
+              class="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+          </div>
+        {% else %}
+          <div class="p-6 rounded-2xl bg-surface border border-border text-center space-y-2">
+            <svg class="w-8 h-8 text-text-muted/50 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            <p class="text-sm font-semibold text-text-muted">No trailer currently available.</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- ── CAST SECTION ────────────────────────────────────────────────────── -->
+      {% if cast %}
+        <div class="space-y-4 pt-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-text-muted">Featured Cast</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            {% for actor in cast %}
+              <div class="flex items-center gap-3 p-2.5 rounded-xl bg-surface border border-border">
+                {% if actor.profile_path %}
+                  <img src="{{ actor.profile_path|tmdb_image:'w185' }}" alt="{{ actor.name }}" class="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                {% else %}
+                  <div class="w-10 h-10 rounded-full bg-surface-elevated flex items-center justify-center text-text-muted text-xs font-bold flex-shrink-0">
+                    {{ actor.name|slice:":1" }}
+                  </div>
+                {% endif %}
+                <div class="min-w-0 flex-1">
+                  <p class="text-xs font-bold text-white truncate">{{ actor.name }}</p>
+                  {% if actor.character %}
+                    <p class="text-[11px] text-text-muted truncate">{{ actor.character }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
       <hr class="border-border/80 my-8" />
 
-      <!-- ── Where to Watch (Provider Section) ───────────────────────────────── -->
-      <div id="providers-section" class="space-y-6">
+      <!-- ── WHERE TO WATCH (PROVIDER SECTION) ───────────────────────────────── -->
+      <div id="where-to-watch" class="space-y-6">
         
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-xl bg-accent/20 flex items-center justify-center">
-            <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-accent/20 flex items-center justify-center">
+              <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            </div>
+            <h2 class="text-xl font-bold text-white">Streaming Availability</h2>
           </div>
-          <h2 class="text-xl font-bold text-white">Where to Watch Legally</h2>
         </div>
 
         <!-- Subscription Streaming -->
@@ -139,11 +199,14 @@
                    class="provider-badge shadow-md group" id="provider-{{ p.provider_id }}"
                    data-provider-name="{{ p.provider_name }}"
                    data-provider-logo="{% if p.logo_path %}{{ p.logo_path|tmdb_image:'w92' }}{% endif %}"
-                   title="Stream on {{ p.provider_name }}">
+                   title="Available On {{ p.provider_name }}">
                   {% if p.logo_path %}
                     <img src="{{ p.logo_path|tmdb_image:'w92' }}" alt="{{ p.provider_name }} logo" />
                   {% endif %}
-                  <span class="truncate">{{ p.provider_name }}</span>
+                  <div class="flex flex-col min-w-0">
+                    <span class="text-xs text-text-muted font-semibold uppercase tracking-wide">Available On</span>
+                    <span class="font-bold text-white truncate">{{ p.provider_name }}</span>
+                  </div>
                   <svg class="w-4 h-4 text-text-muted ml-auto flex-shrink-0 group-hover:text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                   </svg>
@@ -166,11 +229,14 @@
                    class="provider-badge shadow-md group" id="provider-rent-{{ p.provider_id }}"
                    data-provider-name="{{ p.provider_name }}"
                    data-provider-logo="{% if p.logo_path %}{{ p.logo_path|tmdb_image:'w92' }}{% endif %}"
-                   title="Rent on {{ p.provider_name }}">
+                   title="Rent On {{ p.provider_name }}">
                   {% if p.logo_path %}
                     <img src="{{ p.logo_path|tmdb_image:'w92' }}" alt="{{ p.provider_name }} logo" />
                   {% endif %}
-                  <span class="truncate">{{ p.provider_name }}</span>
+                  <div class="flex flex-col min-w-0">
+                    <span class="text-xs text-text-muted font-semibold uppercase tracking-wide">Rent On</span>
+                    <span class="font-bold text-white truncate">{{ p.provider_name }}</span>
+                  </div>
                   <svg class="w-4 h-4 text-text-muted ml-auto flex-shrink-0 group-hover:text-amber-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                   </svg>
@@ -193,11 +259,14 @@
                    class="provider-badge shadow-md group" id="provider-buy-{{ p.provider_id }}"
                    data-provider-name="{{ p.provider_name }}"
                    data-provider-logo="{% if p.logo_path %}{{ p.logo_path|tmdb_image:'w92' }}{% endif %}"
-                   title="Buy on {{ p.provider_name }}">
+                   title="Buy On {{ p.provider_name }}">
                   {% if p.logo_path %}
                     <img src="{{ p.logo_path|tmdb_image:'w92' }}" alt="{{ p.provider_name }} logo" />
                   {% endif %}
-                  <span class="truncate">{{ p.provider_name }}</span>
+                  <div class="flex flex-col min-w-0">
+                    <span class="text-xs text-text-muted font-semibold uppercase tracking-wide">Buy On</span>
+                    <span class="font-bold text-white truncate">{{ p.provider_name }}</span>
+                  </div>
                   <svg class="w-4 h-4 text-text-muted ml-auto flex-shrink-0 group-hover:text-cyan transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                   </svg>
@@ -207,33 +276,27 @@
           </div>
         {% endif %}
 
-        <!-- Empty State fallback -->
+        <!-- Empty State Fallback -->
         {% if not providers.flatrate and not providers.rent and not providers.buy %}
-          <div class="flex items-center gap-4 p-6 rounded-2xl bg-surface border border-border text-text-muted">
-            <div class="w-12 h-12 rounded-xl bg-surface-elevated flex items-center justify-center flex-shrink-0">
-              <svg class="w-6 h-6 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                      d="M9.172 16.172a4 4 0 0 1 5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
-              </svg>
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 rounded-2xl bg-surface border border-border">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl bg-surface-elevated flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M9.172 16.172a4 4 0 0 1 5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-bold text-white text-base">No streaming provider information currently available.</h4>
+                <p class="text-xs text-text-muted mt-0.5">Check back later or search web providers for legal options.</p>
+              </div>
             </div>
-            <div>
-              <h4 class="font-bold text-white text-base">Not Currently Streaming</h4>
-              <p class="text-sm text-text-muted mt-0.5">No subscription, rent, or buy availability listed for US region right now.</p>
-            </div>
-          </div>
-        {% endif %}
-
-        <!-- JustWatch Full Availability Link -->
-        {% if justwatch_link %}
-          <div class="pt-4">
-            <a href="{{ justwatch_link }}" target="_blank" rel="noopener noreferrer"
-               class="btn-accent text-sm provider-badge-link" id="justwatch-link"
-               data-provider-name="JustWatch"
-               data-provider-logo="https://www.justwatch.com/favicon.ico">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-              </svg>
-              View Full Availability & Pricing on JustWatch
+            
+            <!-- Search the Web Button -->
+            <a href="{{ google_search_url }}" target="_blank" rel="noopener noreferrer"
+               class="btn-outline text-xs font-bold py-2.5 px-5 flex-shrink-0 flex items-center gap-2">
+              <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/></svg>
+              <span>Search the Web</span>
             </a>
           </div>
         {% endif %}
@@ -243,6 +306,27 @@
     </div>
 
   </div>
+
+  <!-- ── 5. YOU MAY ALSO LIKE (RELATED TITLES SHOWCASE) ──────────────────── -->
+  {% if similar_items %}
+    <div class="mt-20 space-y-6">
+      <div class="flex items-center gap-3">
+        <div class="w-2.5 h-8 rounded-full bg-accent shadow-glow-sm"></div>
+        <div>
+          <h2 class="text-2xl font-black text-white tracking-tight">You May Also Like</h2>
+          <p class="text-xs text-text-muted">Recommended titles based on {{ title }}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5">
+        {% for item in similar_items %}
+          {% with media_type=media_type %}
+            {% include "partials/media_card.html" %}
+          {% endwith %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
 
 </div>
 
@@ -272,7 +356,7 @@
       </h3>
       
       <p class="text-xs text-text-muted font-medium">
-        Redirecting to official streaming page
+        Opening streaming options
       </p>
     </div>
 
@@ -282,7 +366,7 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const providerBadges = document.querySelectorAll('.provider-badge, .provider-badge-link');
+    const providerBadges = document.querySelectorAll('.provider-badge');
     const overlay = document.getElementById('provider-modal-overlay');
     const modalCard = document.getElementById('provider-modal-card');
     const modalImg = document.getElementById('modal-provider-img');
@@ -296,7 +380,6 @@
         const name = this.dataset.providerName || 'Streaming Provider';
         const logo = this.dataset.providerLogo || '';
 
-        // Populate modal data
         modalTitle.textContent = name;
         if (logo) {
           modalImg.src = logo;
@@ -304,19 +387,16 @@
         } else {
           modalImg.classList.add('hidden');
         }
-        modalStatus.textContent = 'Connecting to ' + name + '…';
+        modalStatus.textContent = 'Opening options for ' + name + '…';
 
-        // Animate overlay & modal card into center screen
         overlay.classList.remove('opacity-0', 'pointer-events-none');
         overlay.classList.add('opacity-100', 'pointer-events-auto');
         modalCard.classList.remove('scale-90');
         modalCard.classList.add('scale-100');
 
-        // Smooth redirect after 1.5s loading animation
         setTimeout(function () {
           window.open(targetUrl, '_blank', 'noopener,noreferrer');
           
-          // Reset modal after short delay
           setTimeout(function () {
             overlay.classList.remove('opacity-100', 'pointer-events-auto');
             overlay.classList.add('opacity-0', 'pointer-events-none');

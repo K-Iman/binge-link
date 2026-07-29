@@ -117,7 +117,7 @@
             <div class="pt-2">
               <a href="{% url 'core:movie_detail' hero_item.id %}"
                  class="w-full btn-accent text-xs sm:text-sm font-bold flex items-center justify-center gap-2">
-                <span>Where to Stream This Title</span>
+                <span>View Streaming Options</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
               </a>
             </div>
@@ -163,7 +163,7 @@
         <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       </div>
       <div>
-        <h3 class="text-base font-bold text-white group-hover:text-purple-400 transition-colors">Anime</h3>
+        <h3 class="text-base font-bold text-white group-hover:text-purple-400 transition-colors">Anime Picks</h3>
         <p class="text-xs text-text-muted">Animated hits</p>
       </div>
     </a>
@@ -182,14 +182,41 @@
   </div>
 </section>
 
-<!-- ── 3. TRENDING MOVIES SECTION (RESPONSIVE DECENTLY-SIZED GRID FORMAT) ── -->
+<!-- ── 3. TRENDING TODAY (DAILY HIGHLIGHTS) ────────────────────────────────── -->
+{% if trending_today %}
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-14">
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-3">
+      <div class="w-2.5 h-8 rounded-full bg-emerald-400 shadow-glow-sm"></div>
+      <div>
+        <h2 class="text-2xl font-black text-white tracking-tight">Trending Today</h2>
+        <p class="text-xs text-text-muted">Most popular titles across all categories in the last 24h</p>
+      </div>
+    </div>
+    <a href="{% url 'core:popular' %}" class="text-sm font-semibold text-emerald-400 hover:underline flex items-center gap-1 transition-colors">
+      <span>View all</span>
+      <span>→</span>
+    </a>
+  </div>
+  
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5">
+    {% for item in trending_today %}
+      {% with media_type=item.media_type|default:"movie" %}
+        {% include "partials/media_card.html" %}
+      {% endwith %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- ── 4. POPULAR MOVIES SECTION ─────────────────────────────────────────── -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
   <div class="flex items-center justify-between mb-6">
     <div class="flex items-center gap-3">
       <div class="w-2.5 h-8 rounded-full bg-accent shadow-glow-sm"></div>
       <div>
-        <h2 class="text-2xl font-black text-white tracking-tight">Trending Movies</h2>
-        <p class="text-xs text-text-muted">Most searched movies this week</p>
+        <h2 class="text-2xl font-black text-white tracking-tight">Popular Movies</h2>
+        <p class="text-xs text-text-muted">Top blockbuster feature films</p>
       </div>
     </div>
     <a href="{% url 'core:popular' %}?type=movie" class="text-sm font-semibold text-accent hover:text-accent-hover flex items-center gap-1 transition-colors" id="view-all-movies">
@@ -198,25 +225,24 @@
     </a>
   </div>
   
-  <!-- Responsive Multi-Column Grid (Decently Sized Cards: 2 cols on mobile, up to 6 cols on desktop) -->
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5">
     {% for item in trending_movies %}
       {% with media_type="movie" %}
         {% include "partials/media_card.html" %}
       {% endwith %}
     {% empty %}
-      <p class="col-span-full text-text-muted text-sm py-8 text-center">No trending movies available.</p>
+      <p class="col-span-full text-text-muted text-sm py-8 text-center">No popular movies available.</p>
     {% endfor %}
   </div>
 </section>
 
-<!-- ── 4. TRENDING TV SHOWS SECTION (RESPONSIVE DECENTLY-SIZED GRID FORMAT) ── -->
+<!-- ── 5. POPULAR TV SHOWS SECTION ───────────────────────────────────────── -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
   <div class="flex items-center justify-between mb-6">
     <div class="flex items-center gap-3">
       <div class="w-2.5 h-8 rounded-full bg-cyan shadow-cyan"></div>
       <div>
-        <h2 class="text-2xl font-black text-white tracking-tight">Trending TV Series</h2>
+        <h2 class="text-2xl font-black text-white tracking-tight">Popular TV Series</h2>
         <p class="text-xs text-text-muted">Top series streaming across providers</p>
       </div>
     </div>
@@ -226,7 +252,6 @@
     </a>
   </div>
 
-  <!-- Responsive Multi-Column Grid (Decently Sized Cards: 2 cols on mobile, up to 6 cols on desktop) -->
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5">
     {% for item in trending_tv %}
       {% with media_type="tv" %}
@@ -238,14 +263,14 @@
   </div>
 </section>
 
-<!-- ── 5. POPULAR ANIME SHOWCASE SECTION (RESPONSIVE DECENTLY-SIZED GRID FORMAT) ── -->
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 mb-16">
+<!-- ── 6. ANIME PICKS SECTION ───────────────────────────────────────────── -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
   <div class="flex items-center justify-between mb-6">
     <div class="flex items-center gap-3">
       <div class="w-2.5 h-8 rounded-full bg-purple-500 shadow-glow-sm"></div>
       <div>
-        <h2 class="text-2xl font-black text-white tracking-tight">Top Rated Anime</h2>
-        <p class="text-xs text-text-muted">Popular animated series & shows</p>
+        <h2 class="text-2xl font-black text-white tracking-tight">Anime Picks</h2>
+        <p class="text-xs text-text-muted">Top rated Japanese animation series</p>
       </div>
     </div>
     <a href="{% url 'core:browse_genre' 16 %}?type=tv" class="text-sm font-semibold text-purple-400 hover:underline flex items-center gap-1 transition-colors" id="view-all-anime">
@@ -254,7 +279,6 @@
     </a>
   </div>
 
-  <!-- Responsive Multi-Column Grid (Decently Sized Cards: 2 cols on mobile, up to 6 cols on desktop) -->
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5">
     {% for item in anime %}
       {% with media_type="tv" %}
@@ -266,7 +290,34 @@
   </div>
 </section>
 
-<!-- ── 6. VISUAL GENRE EXPLORER MATRIX ───────────────────────────────────── -->
+<!-- ── 7. TOP RATED CINEMA ────────────────────────────────────────────────── -->
+{% if top_rated_movies %}
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 mb-16">
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-3">
+      <div class="w-2.5 h-8 rounded-full bg-amber-400 shadow-glow-sm"></div>
+      <div>
+        <h2 class="text-2xl font-black text-white tracking-tight">Top Rated Classics</h2>
+        <p class="text-xs text-text-muted">Highest user-rated movies of all time</p>
+      </div>
+    </div>
+    <a href="{% url 'core:popular' %}?type=movie" class="text-sm font-semibold text-amber-400 hover:underline flex items-center gap-1 transition-colors">
+      <span>View all</span>
+      <span>→</span>
+    </a>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5">
+    {% for item in top_rated_movies %}
+      {% with media_type="movie" %}
+        {% include "partials/media_card.html" %}
+      {% endwith %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- ── 8. VISUAL GENRE EXPLORER MATRIX ───────────────────────────────────── -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-20">
   <div class="mb-8 text-center max-w-2xl mx-auto space-y-2">
     <h2 class="text-3xl font-black text-white tracking-tight">Explore by Genre</h2>
@@ -332,7 +383,7 @@
   </div>
 </section>
 
-<!-- ── 7. PLATFORM FEATURE HIGHLIGHT CARDS ────────────────────────────────── -->
+<!-- ── 9. PLATFORM FEATURE HIGHLIGHT CARDS ────────────────────────────────── -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-20">
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     
@@ -369,7 +420,7 @@
   </div>
 </section>
 
-<!-- ── 8. CINEMATIC CTA BANNER ────────────────────────────────────────────── -->
+<!-- ── 10. CINEMATIC CTA BANNER ────────────────────────────────────────────── -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-20">
   <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-accent/20 via-surface to-cyan/20 border border-border p-8 sm:p-14 text-center space-y-6 shadow-2xl">
     
