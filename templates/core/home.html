@@ -210,7 +210,7 @@
   </div>
 </section>
 
-<!-- ── 4. TRENDING TV SHOWS RAIL ─────────────────────────────────────────── -->
+<!-- ── 4. TRENDING TV SHOWS SECTION (RESPONSIVE DECENTLY-SIZED GRID FORMAT) ── -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
   <div class="flex items-center justify-between mb-6">
     <div class="flex items-center gap-3">
@@ -226,20 +226,19 @@
     </a>
   </div>
 
-  <div class="scroll-rail">
+  <!-- Responsive Multi-Column Grid (Decently Sized Cards: 2 cols on mobile, up to 6 cols on desktop) -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5">
     {% for item in trending_tv %}
-      <div class="w-40 sm:w-44 md:w-48 xl:w-52 flex-shrink-0">
-        {% with media_type="tv" %}
-          {% include "partials/media_card.html" %}
-        {% endwith %}
-      </div>
+      {% with media_type="tv" %}
+        {% include "partials/media_card.html" %}
+      {% endwith %}
     {% empty %}
-      <p class="text-text-muted text-sm py-8">No trending shows available.</p>
+      <p class="col-span-full text-text-muted text-sm py-8 text-center">No trending shows available.</p>
     {% endfor %}
   </div>
 </section>
 
-<!-- ── 5. POPULAR ANIME SHOWCASE RAIL ────────────────────────────────────── -->
+<!-- ── 5. POPULAR ANIME SHOWCASE SECTION (RESPONSIVE DECENTLY-SIZED GRID FORMAT) ── -->
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 mb-16">
   <div class="flex items-center justify-between mb-6">
     <div class="flex items-center gap-3">
@@ -255,15 +254,14 @@
     </a>
   </div>
 
-  <div class="scroll-rail">
+  <!-- Responsive Multi-Column Grid (Decently Sized Cards: 2 cols on mobile, up to 6 cols on desktop) -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5">
     {% for item in anime %}
-      <div class="w-40 sm:w-44 md:w-48 xl:w-52 flex-shrink-0">
-        {% with media_type="tv" %}
-          {% include "partials/media_card.html" %}
-        {% endwith %}
-      </div>
+      {% with media_type="tv" %}
+        {% include "partials/media_card.html" %}
+      {% endwith %}
     {% empty %}
-      <p class="text-text-muted text-sm py-8">No anime available.</p>
+      <p class="col-span-full text-text-muted text-sm py-8 text-center">No anime available.</p>
     {% endfor %}
   </div>
 </section>
