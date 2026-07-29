@@ -7,9 +7,11 @@
   <meta name="description" content="{% block meta_description %}BingeLink — Discover movies, TV shows and anime. Find where to stream legally on Netflix, Prime Video, Disney+ and more.{% endblock %}" />
   <title>{% block title %}BingeLink — Discover What to Watch{% endblock %}</title>
 
-  <!-- Favicon & PWA App Icons -->
-  <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}" />
-  <link rel="apple-touch-icon" href="{% static 'images/logo.png' %}" />
+  <!-- Favicon & PWA App Icons (Windows, Android & iOS) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/logo.png' %}" />
+  <link rel="icon" type="image/png" sizes="192x192" href="{% static 'icons/icon.png' %}" />
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'icons/apple-touch-icon.png' %}" />
+  <link rel="shortcut icon" href="{% static 'images/logo.png' %}" />
   <link rel="manifest" href="{% url 'core:pwa_manifest' %}" />
   <meta name="theme-color" content="#080B12" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -97,11 +99,11 @@
 
         <!-- Left: Logo & Nav items -->
         <div class="flex items-center gap-6 xl:gap-8 flex-shrink-0">
-          <!-- Official BingeLink Image Logo -->
-          <a href="{% url 'core:home' %}" class="flex items-center gap-3 group flex-shrink-0" id="nav-logo">
+          <!-- Prominent Official BingeLink Image Logo -->
+          <a href="{% url 'core:home' %}" class="flex items-center gap-3.5 group flex-shrink-0" id="nav-logo">
             <img src="{% static 'images/logo.png' %}" alt="BingeLink Logo"
-                 class="w-10 h-10 object-contain rounded-xl shadow-glow-sm group-hover:shadow-glow group-hover:scale-105 transition-all duration-300" />
-            <span class="text-xl sm:text-2xl font-black tracking-tight text-white group-hover:text-accent transition-colors">
+                 class="w-12 sm:w-14 h-12 sm:h-14 object-contain rounded-2xl shadow-glow group-hover:scale-105 transition-all duration-300" />
+            <span class="text-2xl sm:text-3xl font-black tracking-tight text-white group-hover:text-accent transition-colors">
               Binge<span class="text-accent">Link</span>
             </span>
           </a>
@@ -215,7 +217,7 @@
         <!-- Brand Info -->
         <div class="space-y-4 md:col-span-2">
           <div class="flex items-center gap-3">
-            <img src="{% static 'images/logo.png' %}" alt="BingeLink Logo" class="w-8 h-8 object-contain rounded-lg shadow-md" />
+            <img src="{% static 'images/logo.png' %}" alt="BingeLink Logo" class="w-10 h-10 object-contain rounded-xl shadow-md" />
             <span class="text-xl font-bold text-white">BingeLink</span>
           </div>
           <p class="text-text-muted text-sm max-w-sm leading-relaxed">
