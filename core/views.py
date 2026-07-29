@@ -9,13 +9,24 @@ PROVIDER_STRIP = ["Netflix", "Prime Video", "Disney+", "Crunchyroll", "Apple TV+
 
 @cache_page(60 * 15)
 def home(request: HttpRequest) -> HttpResponse:
-    trending_movies = tmdb.get_trending("movie")
-    trending_tv = tmdb.get_trending("tv")
-    anime = tmdb.get_anime()
+    trending_movies_data = tmdb.get_trending("movie")
+    trending_tv_data = tmdb.get_trending("tv")
+    anime_data = tmdb.get_anime()
+
+    trending_movies = trending_movies_data.get("results", [])[:10]
+    trending_tv = trending_tv_data.get("results", [])[:10]
+    anime = anime_data.get("results", [])[:10]
+
+    # Select top trending item as Hero Spotlight
+    hero_item = trending_movies[0] if trending_movies else (trending_tv[0] if trending_tv else None)
+    hero_backdrop_url = tmdb.image_url(hero_item.get("backdrop_path"), "original") if hero_item else None
+
     return render(request, "core/home.html", {
-        "trending_movies": trending_movies.get("results", [])[:10],
-        "trending_tv": trending_tv.get("results", [])[:10],
-        "anime": anime.get("results", [])[:10],
+        "hero_item": hero_item,
+        "hero_backdrop_url": hero_backdrop_url,
+        "trending_movies": trending_movies,
+        "trending_tv": trending_tv,
+        "anime": anime,
         "providers_strip": PROVIDER_STRIP,
     })
 
@@ -134,4 +145,3 @@ def library(request: HttpRequest) -> HttpResponse:
         return render(request, "partials/library_grid.html", context)
         
     return render(request, "core/library.html", context)
-
