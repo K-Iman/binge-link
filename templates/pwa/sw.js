@@ -2,6 +2,7 @@ const CACHE_NAME = 'bingelink-v1.0.0';
 const STATIC_ASSETS = [
   '/',
   '/static/css/bingelink.css',
+  '/static/images/logo.png',
   '/static/icons/icon.svg',
   '/offline/'
 ];

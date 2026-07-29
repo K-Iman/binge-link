@@ -7,7 +7,9 @@
   <meta name="description" content="{% block meta_description %}BingeLink — Discover movies, TV shows and anime. Find where to stream legally on Netflix, Prime Video, Disney+ and more.{% endblock %}" />
   <title>{% block title %}BingeLink — Discover What to Watch{% endblock %}</title>
 
-  <!-- PWA Manifest & Mobile Web App Configuration -->
+  <!-- Favicon & PWA App Icons -->
+  <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}" />
+  <link rel="apple-touch-icon" href="{% static 'images/logo.png' %}" />
   <link rel="manifest" href="{% url 'core:pwa_manifest' %}" />
   <meta name="theme-color" content="#080B12" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -16,7 +18,6 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="BingeLink" />
-  <link rel="apple-touch-icon" href="{% static 'icons/icon.svg' %}" />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -96,16 +97,10 @@
 
         <!-- Left: Logo & Nav items -->
         <div class="flex items-center gap-6 xl:gap-8 flex-shrink-0">
-          <!-- Logo -->
+          <!-- Official BingeLink Image Logo -->
           <a href="{% url 'core:home' %}" class="flex items-center gap-3 group flex-shrink-0" id="nav-logo">
-            <div class="w-10 h-10 rounded-xl bg-accent-gradient flex items-center justify-center shadow-glow-sm group-hover:shadow-glow group-hover:scale-105 transition-all duration-300">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
+            <img src="{% static 'images/logo.png' %}" alt="BingeLink Logo"
+                 class="w-10 h-10 object-contain rounded-xl shadow-glow-sm group-hover:shadow-glow group-hover:scale-105 transition-all duration-300" />
             <span class="text-xl sm:text-2xl font-black tracking-tight text-white group-hover:text-accent transition-colors">
               Binge<span class="text-accent">Link</span>
             </span>
@@ -220,11 +215,7 @@
         <!-- Brand Info -->
         <div class="space-y-4 md:col-span-2">
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-accent-gradient flex items-center justify-center">
-              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-              </svg>
-            </div>
+            <img src="{% static 'images/logo.png' %}" alt="BingeLink Logo" class="w-8 h-8 object-contain rounded-lg shadow-md" />
             <span class="text-xl font-bold text-white">BingeLink</span>
           </div>
           <p class="text-text-muted text-sm max-w-sm leading-relaxed">
