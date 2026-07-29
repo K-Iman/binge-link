@@ -127,7 +127,7 @@
           
           <!-- Live Navbar Search Form (Desktop/Tablet) -->
           <div class="relative hidden sm:block" id="nav-search-wrapper">
-            <form action="{% url 'core:search' %}" method="get" id="nav-search-form">
+            <form action="#" method="get" id="nav-search-form" onsubmit="return false;">
               <div class="relative">
                 <input
                   type="text"
@@ -136,11 +136,11 @@
                   value="{{ query|default:'' }}"
                   autocomplete="off"
                   id="nav-search-input"
+                  onkeydown="if(event.key==='Enter'){event.preventDefault();return false;}"
                   class="w-48 md:w-60 xl:w-72 bg-surface/80 border border-border rounded-xl px-4 py-2 pl-9 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-200"
                   hx-get="{% url 'core:search' %}"
-                  hx-trigger="keyup changed delay:350ms"
+                  hx-trigger="keyup changed delay:200ms"
                   hx-target="#search-dropdown"
-                  hx-include="[name='q']"
                   hx-vals='{"partial": "dropdown"}'
                 />
                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,7 +149,7 @@
               </div>
             </form>
             <!-- Dropdown Results Container -->
-            <div id="search-dropdown" class="absolute right-0 top-full mt-3 w-80 sm:w-96 z-50 rounded-2xl shadow-2xl overflow-hidden"></div>
+            <div id="search-dropdown" class="absolute right-0 top-full mt-3 w-80 sm:w-96 z-50 rounded-2xl shadow-2xl"></div>
           </div>
 
           <!-- Mobile Actions (Search & Menu Buttons) -->
@@ -266,6 +266,22 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    document.addEventListener('click', function (e) {
+      const navDropdown = document.getElementById('search-dropdown');
+      const heroDropdown = document.getElementById('hero-search-dropdown');
+      const navInput = document.getElementById('nav-search-input');
+      const heroInput = document.getElementById('hero-search-input');
+
+      if (navDropdown && navInput && !navInput.contains(e.target) && !navDropdown.contains(e.target)) {
+        navDropdown.innerHTML = '';
+      }
+      if (heroDropdown && heroInput && !heroInput.contains(e.target) && !heroDropdown.contains(e.target)) {
+        heroDropdown.innerHTML = '';
+      }
+    });
+  </script>
 
 </body>
 </html>

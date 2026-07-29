@@ -49,7 +49,7 @@
         </p>
 
         <!-- Centered Hero Search Bar (High Z-Index so dropdown floats cleanly) -->
-        <form action="{% url 'core:search' %}" method="get" class="max-w-2xl relative z-30" id="hero-search-form">
+        <form action="#" method="get" class="max-w-2xl relative z-30" id="hero-search-form" onsubmit="return false;">
           <div class="relative group shadow-2xl rounded-2xl">
             <input
               type="text"
@@ -57,18 +57,18 @@
               placeholder="Search any movie, TV show, or anime title…"
               id="hero-search-input"
               autocomplete="off"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();return false;}"
               class="w-full bg-surface/90 backdrop-blur-xl border border-border/90 rounded-2xl px-5 py-4 pl-14 sm:pl-16 text-base sm:text-lg text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition-all duration-300 group-hover:border-accent/50 shadow-inner"
               hx-get="{% url 'core:search' %}"
-              hx-trigger="keyup changed delay:300ms"
+              hx-trigger="keyup changed delay:200ms"
               hx-target="#hero-search-dropdown"
-              hx-include="[name='q']"
               hx-vals='{"partial": "dropdown"}'
             />
             <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-text-muted group-hover:text-accent transition-colors pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
             </svg>
-            <button type="submit" id="hero-search-btn"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 btn-accent py-2.5 px-6 text-sm sm:text-base font-bold">
+            <button type="button" id="hero-search-btn"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 btn-accent py-2.5 px-6 text-sm sm:text-base font-bold pointer-events-none">
               Search
             </button>
 
