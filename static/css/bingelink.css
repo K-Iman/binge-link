@@ -1,0 +1,357 @@
+/* ── BingeLink Design System & Utilities ─────────────────────────────────── */
+
+:root {
+  --color-bg: #080b12;
+  --color-bg-secondary: #111827;
+  --color-surface: #151c2b;
+  --color-surface-elevated: #1c2436;
+  --color-accent: #7c5cff;
+  --color-accent-hover: #6842ff;
+  --color-cyan: #00c2ff;
+  --color-border: #273247;
+  --color-border-hover: #3b4b6b;
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+}
+
+/* Base resets & smooth scrolling */
+html {
+  color-scheme: dark;
+  background-color: var(--color-bg);
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+  border: 2px solid var(--color-bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(21, 28, 43, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(39, 50, 71, 0.8);
+}
+
+/* 50% Transparent Navigation Bar */
+.glass-nav {
+  background-color: rgba(8, 11, 18, 0.5);
+  border-bottom: 1px solid rgba(39, 50, 71, 0.5);
+}
+
+/* Hero Vignette Mask for Cinematic Movie Banners */
+.hero-vignette {
+  background: linear-gradient(
+    180deg,
+    rgba(8, 11, 18, 0.2) 0%,
+    rgba(8, 11, 18, 0.65) 50%,
+    var(--color-bg) 100%
+  ),
+  linear-gradient(
+    90deg,
+    var(--color-bg) 0%,
+    rgba(8, 11, 18, 0.4) 40%,
+    transparent 100%
+  );
+}
+
+/* Glowing Border Accent */
+.glow-border {
+  border: 1px solid rgba(124, 92, 255, 0.35);
+  box-shadow: 0 0 30px -5px rgba(124, 92, 255, 0.25);
+}
+
+/* Category Card Styling */
+.category-card {
+  position: relative;
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-elevated) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+.category-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(124, 92, 255, 0.6);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.7), 0 0 20px -5px rgba(124, 92, 255, 0.3);
+}
+
+/* Scroll Rail for Horizontal Lists */
+.scroll-rail {
+  display: flex;
+  gap: 1.25rem;
+  overflow-x: auto;
+  padding-bottom: 1.25rem;
+  padding-top: 0.5rem;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 92, 255, 0.3) transparent;
+}
+.scroll-rail::-webkit-scrollbar {
+  height: 6px;
+}
+.scroll-rail::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 9999px;
+}
+.scroll-rail::-webkit-scrollbar-thumb {
+  background: rgba(124, 92, 255, 0.35);
+  border-radius: 9999px;
+}
+.scroll-rail::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+.scroll-rail > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  width: 11.5rem; /* 184px default width in horizontal rails */
+}
+@media (min-width: 640px) {
+  .scroll-rail > * {
+    width: 12.5rem; /* 200px in sm breakpoint */
+  }
+}
+
+/* Media Cards - Grid Cell Default */
+.media-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.3s ease;
+}
+
+.media-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: rgba(124, 92, 255, 0.5);
+  box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.8), 0 0 20px -5px rgba(124, 92, 255, 0.25);
+  z-index: 10;
+}
+
+/* Poster placeholder fallback */
+.poster-placeholder {
+  aspect-ratio: 2 / 3;
+  background: linear-gradient(135deg, #151c2b 0%, #1c2436 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card overlay gradient */
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(8, 11, 18, 0.95) 0%, rgba(8, 11, 18, 0.4) 40%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.media-card:hover .card-overlay {
+  opacity: 1;
+}
+
+/* Rating Badges */
+.rating-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.rating-high {
+  background-color: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.rating-mid {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.rating-low {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ── ANIMATED PREMIUM PROVIDER BADGE CARDS ────────────────────────────────── */
+.provider-badge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1.25rem;
+  background: linear-gradient(135deg, rgba(21, 28, 43, 0.85) 0%, rgba(28, 36, 54, 0.95) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(39, 50, 71, 0.9);
+  border-radius: 1.125rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Shimmer Light Beam Sweep on Hover */
+.provider-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  transition: left 0.65s ease;
+  pointer-events: none;
+}
+
+.provider-badge:hover::before {
+  left: 140%;
+}
+
+.provider-badge:hover {
+  background: linear-gradient(135deg, rgba(28, 36, 54, 0.95) 0%, rgba(35, 46, 70, 1) 100%);
+  border-color: rgba(124, 92, 255, 0.6);
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 14px 30px -8px rgba(0, 0, 0, 0.7), 0 0 25px -4px rgba(124, 92, 255, 0.35);
+}
+
+.provider-badge img {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+
+.provider-badge:hover img {
+  transform: scale(1.12) rotate(2deg);
+  box-shadow: 0 6px 18px rgba(124, 92, 255, 0.4);
+}
+
+/* Sleek Rotating Liquid Ring Spinner */
+@keyframes ringRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinner-ring {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  border: 3px solid rgba(124, 92, 255, 0.15);
+  border-top-color: var(--color-accent);
+  border-right-color: var(--color-cyan);
+  animation: ringRotate 0.8s linear infinite;
+  box-shadow: 0 0 20px rgba(124, 92, 255, 0.3);
+}
+
+/* Custom Buttons */
+.btn-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--color-accent) 0%, #6342ff 100%);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.25rem;
+  box-shadow: 0 4px 16px rgba(124, 92, 255, 0.35);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-accent:hover {
+  background: linear-gradient(135deg, #8a6cff 0%, #7252ff 100%);
+  box-shadow: 0 6px 24px rgba(124, 92, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.25rem;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-outline:hover {
+  background-color: var(--color-surface-elevated);
+  border-color: var(--color-accent);
+  color: #ffffff;
+}
+
+/* Section Titles */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--color-text-primary);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Focus styles for accessibility */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

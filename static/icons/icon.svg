@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e1322"/>
+      <stop offset="50%" stop-color="#151c2b"/>
+      <stop offset="100%" stop-color="#080b12"/>
+    </linearGradient>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c5cff"/>
+      <stop offset="50%" stop-color="#6842ff"/>
+      <stop offset="100%" stop-color="#00c2ff"/>
+    </linearGradient>
+    <linearGradient id="accentGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00c2ff"/>
+      <stop offset="100%" stop-color="#7c5cff"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Card -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)"/>
+  <rect x="16" y="16" width="480" height="480" rx="112" fill="none" stroke="url(#brandGrad)" stroke-opacity="0.3" stroke-width="4"/>
+
+  <!-- Glowing Aura -->
+  <circle cx="256" cy="256" r="140" fill="url(#brandGrad)" opacity="0.25" filter="url(#glow)" />
+
+  <!-- BingeLink Emblem Symbol -->
+  <g transform="translate(116, 116)">
+    <!-- Left Book/Play Wing -->
+    <path d="M40 70 C40 30, 80 20, 140 40 L140 210 C80 190, 40 200, 40 240 Z" 
+          fill="url(#brandGrad)" />
+    <!-- Right Book/Play Wing -->
+    <path d="M240 70 C240 30, 200 20, 140 40 L140 210 C200 190, 240 200, 240 240 Z" 
+          fill="url(#accentGlow)" opacity="0.9" />
+    <!-- Play Reel Triangle Center -->
+    <path d="M125 100 L175 130 L125 160 Z" fill="#ffffff" />
+  </g>
+</svg>
