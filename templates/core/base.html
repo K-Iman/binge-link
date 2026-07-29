@@ -78,72 +78,72 @@
 
 <body class="bg-bg text-text-primary font-sans antialiased min-h-screen flex flex-col selection:bg-accent selection:text-white">
 
-  <!-- ── Navigation Bar ────────────────────────────────────────────────────── -->
-  <header class="sticky top-0 z-50 transition-all duration-300 glass-nav border-b border-border/80">
+  <!-- ── Liquid Glass Navigation Bar ────────────────────────────────────────── -->
+  <header class="sticky top-0 z-50 glass-nav">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-20">
+      <div class="flex items-center justify-between h-20 gap-4">
 
         <!-- Left: Logo & Nav items -->
-        <div class="flex items-center gap-8">
+        <div class="flex items-center gap-6 xl:gap-8 flex-shrink-0">
           <!-- Logo -->
-          <a href="{% url 'core:home' %}" class="flex items-center gap-3 group" id="nav-logo">
+          <a href="{% url 'core:home' %}" class="flex items-center gap-3 group flex-shrink-0" id="nav-logo">
             <div class="w-10 h-10 rounded-xl bg-accent-gradient flex items-center justify-center shadow-glow-sm group-hover:shadow-glow group-hover:scale-105 transition-all duration-300">
               <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M4 6l4-2 4 2 4-2 4 2v14l-4-2-4 2-4-2-4 2V6z"/>
               </svg>
             </div>
-            <span class="text-2xl font-black tracking-tight text-white">
+            <span class="text-2xl font-black tracking-tight text-white whitespace-nowrap">
               Binge<span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-cyan">Link</span>
             </span>
           </a>
 
           <!-- Desktop Navigation Links -->
-          <nav class="hidden lg:flex items-center gap-1">
+          <nav class="hidden xl:flex items-center gap-1">
             <a href="{% url 'core:home' %}" id="nav-home"
-               class="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200">
+               class="px-3.5 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200 whitespace-nowrap">
               Home
             </a>
             <a href="{% url 'core:library' %}" id="nav-library"
-               class="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200">
+               class="px-3.5 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200 whitespace-nowrap">
               Browse Library
             </a>
             <a href="{% url 'core:popular' %}" id="nav-popular"
-               class="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200">
+               class="px-3.5 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200 whitespace-nowrap">
               Popular
             </a>
             <a href="{% url 'core:popular' %}?type=tv" id="nav-tv"
-               class="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200">
+               class="px-3.5 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200 whitespace-nowrap">
               TV Shows
             </a>
             <a href="{% url 'core:browse_genre' 16 %}?type=tv" id="nav-anime"
-               class="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200">
+               class="px-3.5 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200 whitespace-nowrap">
               Anime
             </a>
           </nav>
         </div>
 
         <!-- Right: Search Bar & Mobile Buttons -->
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3 flex-shrink-0">
           
-          <!-- Live Navbar Search Form (Desktop) -->
-          <div class="relative hidden md:block" id="nav-search-wrapper">
+          <!-- Live Navbar Search Form (Desktop/Tablet) -->
+          <div class="relative hidden sm:block" id="nav-search-wrapper">
             <form action="{% url 'core:search' %}" method="get" id="nav-search-form">
               <div class="relative">
                 <input
                   type="text"
                   name="q"
-                  placeholder="Search movies, shows, anime…"
+                  placeholder="Search movies, shows…"
                   value="{{ query|default:'' }}"
                   autocomplete="off"
                   id="nav-search-input"
-                  class="w-60 xl:w-72 bg-surface/80 border border-border rounded-xl px-4 py-2.5 pl-10 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-200"
+                  class="w-48 md:w-60 xl:w-72 bg-surface/80 border border-border rounded-xl px-4 py-2 pl-9 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-200"
                   hx-get="{% url 'core:search' %}"
                   hx-trigger="keyup changed delay:350ms"
                   hx-target="#search-dropdown"
                   hx-include="[name='q']"
                   hx-vals='{"partial": "1"}'
                 />
-                <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
                 </svg>
               </div>
@@ -153,9 +153,9 @@
           </div>
 
           <!-- Mobile Actions (Search & Menu Buttons) -->
-          <div class="flex items-center gap-2 md:hidden">
+          <div class="flex items-center gap-2 xl:hidden">
             <a href="{% url 'core:search' %}" id="mobile-search-btn" aria-label="Search"
-               class="p-2.5 rounded-xl bg-surface border border-border text-text-secondary hover:text-white transition-all">
+               class="p-2.5 rounded-xl bg-surface border border-border text-text-secondary hover:text-white transition-all sm:hidden">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
               </svg>
@@ -175,7 +175,7 @@
     </div>
 
     <!-- Mobile Slide-out Menu -->
-    <div id="mobile-menu" class="hidden lg:hidden border-t border-border/80 bg-bg-secondary/95 backdrop-blur-xl">
+    <div id="mobile-menu" class="hidden xl:hidden border-t border-border/80 bg-bg-secondary/95 backdrop-blur-xl">
       <div class="max-w-7xl mx-auto px-4 py-4 space-y-2">
         <a href="{% url 'core:home' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-semibold text-text-secondary hover:text-white hover:bg-surface">
           <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
