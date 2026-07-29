@@ -8,6 +8,11 @@
 {% endblock %}
 {% block meta_description %}Find where to watch {{ item|media_title }} legally. Compare official streaming options on Netflix, Prime Video, Disney+, Crunchyroll, Apple TV+ and more.{% endblock %}
 
+{% block extra_head %}
+  <!-- DotLottie Web Component Module -->
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
+{% endblock %}
+
 {% block content %}
 
 {% with title=item|media_title year=item|media_year rating=item.vote_average %}
@@ -343,7 +348,7 @@
 
 </div>
 
-<!-- ── Full-Screen Interactive Redirect Loading Modal (ULTRA-SLEEK) ──────── -->
+<!-- ── Full-Screen Interactive Redirect Loading Modal (DOTLOTTIE ANIMATED) ── -->
 <div id="provider-modal-overlay"
      class="fixed inset-0 z-50 flex items-center justify-center bg-bg/90 backdrop-blur-3xl opacity-0 pointer-events-none transition-opacity duration-300">
   
@@ -351,7 +356,7 @@
   <div class="absolute w-[450px] h-[450px] bg-accent/20 blur-[130px] rounded-full pointer-events-none"></div>
 
   <div id="provider-modal-card"
-       class="relative flex flex-col items-center justify-center p-8 sm:p-10 rounded-3xl bg-surface/95 border border-accent/40 shadow-2xl space-y-6 max-w-sm sm:max-w-md w-full mx-4 text-center transform scale-90 transition-all duration-300 glow-border">
+       class="relative flex flex-col items-center justify-center p-8 sm:p-10 rounded-3xl bg-surface/95 border border-accent/40 shadow-2xl space-y-4 max-w-sm sm:max-w-md w-full mx-4 text-center transform scale-90 transition-all duration-300 glow-border">
     
     <!-- Animated Centered Provider Badge Replica with Aura -->
     <div class="relative group">
@@ -362,13 +367,18 @@
       </div>
     </div>
 
-    <!-- Sleek Rotating Liquid Ring Spinner & Progress Bar -->
-    <div class="space-y-4 pt-2 w-full flex flex-col items-center">
-      
-      <!-- Rotating Liquid Ring Spinner -->
-      <div class="spinner-ring"></div>
+    <!-- High-End DotLottie Vector Animation -->
+    <div class="flex items-center justify-center -my-4">
+      <dotlottie-wc
+        src="https://lottie.host/d4956712-e7f8-4c7d-af98-498035b5e0b0/lWaPydrah7.lottie"
+        style="width: 200px; height: 200px;"
+        autoplay
+        loop>
+      </dotlottie-wc>
+    </div>
 
-      <!-- Status Text -->
+    <!-- Status Text & Neon Progress Track -->
+    <div class="space-y-3 w-full flex flex-col items-center">
       <div class="space-y-1">
         <h3 id="modal-status-text" class="text-base font-extrabold text-white tracking-tight">
           Connecting to provider…
@@ -382,7 +392,6 @@
       <div class="w-full bg-surface-elevated rounded-full h-1.5 overflow-hidden border border-border/80">
         <div id="modal-progress-bar" class="h-full bg-gradient-to-r from-accent via-purple-400 to-cyan w-0 transition-all duration-[1300ms] ease-out"></div>
       </div>
-
     </div>
 
   </div>
