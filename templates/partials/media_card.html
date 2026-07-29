@@ -20,17 +20,23 @@
       </div>
     {% endif %}
 
-    <!-- Card Top Badge Overlay -->
-    <div class="absolute top-2 right-2 flex flex-col gap-1 items-end z-10">
+    <!-- Card Top Rating Badge Overlay -->
+    <div class="absolute top-2.5 right-2.5 flex flex-col gap-1 items-end z-10">
       {% if rating %}
-        <span class="rating-badge {{ rating|rating_class }} shadow-md">
+        <span class="rating-badge {{ rating|rating_class }} shadow-lg">
           ★ {{ rating|floatformat:1 }}
         </span>
       {% endif %}
     </div>
 
-    <!-- Gradient Overlay on Hover -->
-    <div class="card-overlay"></div>
+    <!-- Centered Play Button Overlay Reveal -->
+    <div class="card-play-overlay z-10">
+      <div class="play-badge">
+        <svg class="w-6 h-6 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </div>
+    </div>
   </div>
 
   <!-- Card Info -->
@@ -38,9 +44,9 @@
     <h3 class="text-sm font-bold leading-snug line-clamp-2 text-text-primary group-hover:text-accent transition-colors duration-200 mb-2">
       {{ title }}
     </h3>
-    <div class="flex items-center justify-between text-xs text-text-muted mt-auto pt-1 border-t border-border/50">
-      <span class="font-medium">{{ year }}</span>
-      <span class="px-2 py-0.5 rounded-full bg-surface-elevated border border-border text-[10px] font-bold tracking-wider uppercase text-text-muted">
+    <div class="flex items-center justify-between text-xs text-text-muted mt-auto pt-2 border-t border-border/50">
+      <span class="font-medium text-text-secondary">{{ year }}</span>
+      <span class="px-2.5 py-0.5 rounded-full bg-surface-elevated border border-border text-[10px] font-extrabold tracking-wider uppercase text-text-muted">
         {{ media_type }}
       </span>
     </div>
