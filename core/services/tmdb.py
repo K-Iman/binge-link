@@ -366,7 +366,7 @@ def get_videos(content_id: int, media_type: str = "movie") -> dict:
                     "iso_639_1": "en",
                     "iso_3166_1": "US",
                     "name": "Official Trailer",
-                    "key": "dQw4w9WgXcQ",
+                    "key": "LdOM0x0XD5U",
                     "site": "YouTube",
                     "size": 1080,
                     "type": "Trailer",
