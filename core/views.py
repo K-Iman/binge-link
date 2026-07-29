@@ -38,29 +38,34 @@ def home(request: HttpRequest) -> HttpResponse:
     })
 
 
-@cache_page(60 * 5)
 def search(request: HttpRequest) -> HttpResponse:
+    """Dynamic multi-search view for movies, TV shows, and anime."""
     query = request.GET.get("q", "").strip()
     page = int(request.GET.get("page", 1))
+    partial_type = request.GET.get("partial", "")
+    
     results = {}
     if query:
         results = tmdb.search_multi(query, page=page)
 
-    # HTMX partial: return only the results grid fragment
-    if request.htmx:
-        return render(request, "partials/search_results.html", {
-            "results": results.get("results", []),
-            "query": query,
-            "total": results.get("total_results", 0),
-        })
-
-    return render(request, "core/search.html", {
+    context = {
         "results": results.get("results", []),
         "query": query,
         "total": results.get("total_results", 0),
         "total_pages": results.get("total_pages", 0),
         "page": page,
-    })
+    }
+
+    # HTMX partial: compact autocomplete dropdown list
+    if request.htmx and partial_type == "dropdown":
+        return render(request, "partials/search_dropdown.html", context)
+
+    # HTMX partial: full search page results grid
+    if request.htmx:
+        return render(request, "partials/search_results.html", context)
+
+    # Full page request
+    return render(request, "core/search.html", context)
 
 
 @cache_page(60 * 15)

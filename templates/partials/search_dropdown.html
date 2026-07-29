@@ -1,0 +1,57 @@
+{% load bingelink_tags %}
+
+{% if results %}
+  <div class="bg-surface/95 backdrop-blur-2xl border border-border rounded-2xl shadow-2xl max-h-96 overflow-y-auto divide-y divide-border/60">
+    {% for item in results %}
+      {% with media_type=item.media_type|default:"movie" title=item|media_title year=item|media_year rating=item.vote_average %}
+        <a href="{% if media_type == 'movie' %}{% url 'core:movie_detail' item.id %}{% else %}{% url 'core:tv_detail' item.id %}{% endif %}"
+           class="flex items-center gap-3.5 p-3 hover:bg-surface-elevated transition-colors text-left group"
+           id="dropdown-item-{{ item.id }}">
+          
+          <!-- Compact Poster Thumbnail -->
+          <div class="w-10 h-14 rounded-lg overflow-hidden bg-surface-elevated flex-shrink-0 border border-border/80">
+            {% if item.poster_path %}
+              <img src="{{ item.poster_path|tmdb_image:'w92' }}" alt="{{ title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+            {% else %}
+              <div class="w-full h-full flex items-center justify-center text-text-muted text-[10px] font-bold">
+                {{ title|slice:":1" }}
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Content Details -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-0.5">
+              <span class="px-2 py-0.5 rounded-full bg-accent/15 border border-accent/30 text-accent text-[10px] font-bold uppercase tracking-wider">
+                {{ media_type }}
+              </span>
+              {% if year %}
+                <span class="text-xs text-text-muted font-medium">{{ year }}</span>
+              {% endif %}
+              {% if rating %}
+                <span class="text-xs font-bold text-amber-400 ml-auto flex items-center gap-0.5">
+                  ★ {{ rating|floatformat:1 }}
+                </span>
+              {% endif %}
+            </div>
+            <h4 class="text-sm font-bold text-white group-hover:text-accent transition-colors truncate">
+              {{ title }}
+            </h4>
+          </div>
+
+        </a>
+      {% endwith %}
+    {% endfor %}
+
+    <!-- View All Results CTA Footer -->
+    <a href="{% url 'core:search' %}?q={{ query|urlencode }}"
+       class="block p-3 text-center text-xs font-bold text-accent hover:text-white bg-surface-elevated/50 hover:bg-accent/20 transition-all border-t border-border">
+      View all results for "{{ query }}" →
+    </a>
+  </div>
+
+{% elif query %}
+  <div class="bg-surface/95 backdrop-blur-2xl border border-border rounded-2xl shadow-2xl p-4 text-center">
+    <p class="text-xs text-text-muted">No matches found for "<span class="text-white font-semibold">{{ query }}</span>"</p>
+  </div>
+{% endif %}
