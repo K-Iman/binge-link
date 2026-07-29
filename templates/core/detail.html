@@ -136,13 +136,15 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="flatrate-providers">
               {% for p in providers.flatrate %}
                 <a href="{{ justwatch_link|default:'https://www.justwatch.com/' }}" target="_blank" rel="noopener noreferrer"
-                   class="provider-badge shadow-md" id="provider-{{ p.provider_id }}"
+                   class="provider-badge shadow-md group" id="provider-{{ p.provider_id }}"
+                   data-provider-name="{{ p.provider_name }}"
+                   data-provider-logo="{% if p.logo_path %}{{ p.logo_path|tmdb_image:'w92' }}{% endif %}"
                    title="Stream on {{ p.provider_name }}">
                   {% if p.logo_path %}
                     <img src="{{ p.logo_path|tmdb_image:'w92' }}" alt="{{ p.provider_name }} logo" />
                   {% endif %}
                   <span class="truncate">{{ p.provider_name }}</span>
-                  <svg class="w-4 h-4 text-text-muted ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4 text-text-muted ml-auto flex-shrink-0 group-hover:text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                   </svg>
                 </a>
@@ -161,13 +163,15 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="rent-providers">
               {% for p in providers.rent %}
                 <a href="{{ justwatch_link|default:'https://www.justwatch.com/' }}" target="_blank" rel="noopener noreferrer"
-                   class="provider-badge shadow-md" id="provider-rent-{{ p.provider_id }}"
+                   class="provider-badge shadow-md group" id="provider-rent-{{ p.provider_id }}"
+                   data-provider-name="{{ p.provider_name }}"
+                   data-provider-logo="{% if p.logo_path %}{{ p.logo_path|tmdb_image:'w92' }}{% endif %}"
                    title="Rent on {{ p.provider_name }}">
                   {% if p.logo_path %}
                     <img src="{{ p.logo_path|tmdb_image:'w92' }}" alt="{{ p.provider_name }} logo" />
                   {% endif %}
                   <span class="truncate">{{ p.provider_name }}</span>
-                  <svg class="w-4 h-4 text-text-muted ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4 text-text-muted ml-auto flex-shrink-0 group-hover:text-amber-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                   </svg>
                 </a>
@@ -186,13 +190,15 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="buy-providers">
               {% for p in providers.buy %}
                 <a href="{{ justwatch_link|default:'https://www.justwatch.com/' }}" target="_blank" rel="noopener noreferrer"
-                   class="provider-badge shadow-md" id="provider-buy-{{ p.provider_id }}"
+                   class="provider-badge shadow-md group" id="provider-buy-{{ p.provider_id }}"
+                   data-provider-name="{{ p.provider_name }}"
+                   data-provider-logo="{% if p.logo_path %}{{ p.logo_path|tmdb_image:'w92' }}{% endif %}"
                    title="Buy on {{ p.provider_name }}">
                   {% if p.logo_path %}
                     <img src="{{ p.logo_path|tmdb_image:'w92' }}" alt="{{ p.provider_name }} logo" />
                   {% endif %}
                   <span class="truncate">{{ p.provider_name }}</span>
-                  <svg class="w-4 h-4 text-text-muted ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4 text-text-muted ml-auto flex-shrink-0 group-hover:text-cyan transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                   </svg>
                 </a>
@@ -221,7 +227,9 @@
         {% if justwatch_link %}
           <div class="pt-4">
             <a href="{{ justwatch_link }}" target="_blank" rel="noopener noreferrer"
-               class="btn-accent text-sm" id="justwatch-link">
+               class="btn-accent text-sm provider-badge-link" id="justwatch-link"
+               data-provider-name="JustWatch"
+               data-provider-logo="https://www.justwatch.com/favicon.ico">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
               </svg>
@@ -237,6 +245,89 @@
   </div>
 
 </div>
+
+<!-- ── Full-Screen Interactive Redirect Loading Modal ────────────────────── -->
+<div id="provider-modal-overlay"
+     class="fixed inset-0 z-50 flex items-center justify-center bg-bg/85 backdrop-blur-2xl opacity-0 pointer-events-none transition-opacity duration-300">
+  
+  <div id="provider-modal-card"
+       class="relative flex flex-col items-center justify-center p-8 sm:p-10 rounded-3xl bg-surface/95 border border-accent/40 shadow-2xl space-y-6 max-w-sm sm:max-w-md w-full mx-4 text-center transform scale-90 transition-all duration-300 glow-border">
+    
+    <!-- Animated Centered Provider Badge Replica -->
+    <div id="modal-provider-badge-box" class="w-full flex items-center justify-center gap-4 p-4 rounded-2xl bg-surface-elevated/90 border border-accent/50 shadow-glow">
+      <img id="modal-provider-img" src="" alt="Provider" class="w-12 h-12 rounded-xl object-cover shadow-lg animate-pulse" />
+      <span id="modal-provider-title" class="text-xl font-extrabold text-white tracking-wide"></span>
+    </div>
+
+    <!-- Loading Animation Under Badge -->
+    <div class="space-y-3 pt-2">
+      <div class="flex items-center justify-center gap-2">
+        <div class="w-3.5 h-3.5 rounded-full bg-accent animate-ping"></div>
+        <div class="w-3.5 h-3.5 rounded-full bg-cyan animate-ping delay-150"></div>
+        <div class="w-3.5 h-3.5 rounded-full bg-purple-400 animate-ping delay-300"></div>
+      </div>
+      
+      <h3 id="modal-status-text" class="text-base font-bold text-white tracking-tight animate-pulse">
+        Connecting to provider…
+      </h3>
+      
+      <p class="text-xs text-text-muted font-medium">
+        Redirecting to official streaming page
+      </p>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const providerBadges = document.querySelectorAll('.provider-badge, .provider-badge-link');
+    const overlay = document.getElementById('provider-modal-overlay');
+    const modalCard = document.getElementById('provider-modal-card');
+    const modalImg = document.getElementById('modal-provider-img');
+    const modalTitle = document.getElementById('modal-provider-title');
+    const modalStatus = document.getElementById('modal-status-text');
+
+    providerBadges.forEach(badge => {
+      badge.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetUrl = this.getAttribute('href');
+        const name = this.dataset.providerName || 'Streaming Provider';
+        const logo = this.dataset.providerLogo || '';
+
+        // Populate modal data
+        modalTitle.textContent = name;
+        if (logo) {
+          modalImg.src = logo;
+          modalImg.classList.remove('hidden');
+        } else {
+          modalImg.classList.add('hidden');
+        }
+        modalStatus.textContent = 'Connecting to ' + name + '…';
+
+        // Animate overlay & modal card into center screen
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.classList.add('opacity-100', 'pointer-events-auto');
+        modalCard.classList.remove('scale-90');
+        modalCard.classList.add('scale-100');
+
+        // Smooth redirect after 1.5s loading animation
+        setTimeout(function () {
+          window.open(targetUrl, '_blank', 'noopener,noreferrer');
+          
+          // Reset modal after short delay
+          setTimeout(function () {
+            overlay.classList.remove('opacity-100', 'pointer-events-auto');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            modalCard.classList.remove('scale-100');
+            modalCard.classList.add('scale-90');
+          }, 500);
+        }, 1400);
+      });
+    });
+  });
+</script>
 
 {% endwith %}
 {% endblock %}
