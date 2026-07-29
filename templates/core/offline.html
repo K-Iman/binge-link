@@ -1,0 +1,29 @@
+{% extends "core/base.html" %}
+{% load bingelink_tags %}
+
+{% block title %}You are Offline — BingeLink{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex flex-col items-center justify-center px-4 py-16 text-center">
+  <div class="max-w-md w-full p-8 rounded-3xl bg-surface border border-border space-y-6 shadow-2xl glow-border">
+    
+    <div class="w-16 h-16 mx-auto rounded-2xl bg-accent/15 border border-accent/30 flex items-center justify-center text-accent">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 4.243a9 9 0 01-12.728 0m0 0l2.829-2.829m-2.829 2.829L3 3m3.536 5.464a5 5 0 017.072 0"/>
+      </svg>
+    </div>
+
+    <div class="space-y-2">
+      <h1 class="text-2xl font-black text-white">You're Currently Offline</h1>
+      <p class="text-sm text-text-muted leading-relaxed">
+        BingeLink requires an internet connection to search real-time streaming availability. Reconnect to resume exploring movies and TV shows.
+      </p>
+    </div>
+
+    <button onclick="window.location.reload()" class="w-full btn-accent py-3 text-sm font-bold shadow-lg">
+      Try Reconnecting
+    </button>
+
+  </div>
+</div>
+{% endblock %}

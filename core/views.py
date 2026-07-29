@@ -231,3 +231,16 @@ def library(request: HttpRequest) -> HttpResponse:
         return render(request, "partials/library_grid.html", context)
         
     return render(request, "core/library.html", context)
+
+
+def pwa_manifest(request: HttpRequest) -> HttpResponse:
+    return render(request, "pwa/manifest.json", content_type="application/json")
+
+
+def pwa_serviceworker(request: HttpRequest) -> HttpResponse:
+    return render(request, "pwa/sw.js", content_type="application/javascript")
+
+
+def offline_fallback(request: HttpRequest) -> HttpResponse:
+    return render(request, "core/offline.html")
+

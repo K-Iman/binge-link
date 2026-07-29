@@ -1,0 +1,20 @@
+{
+  "name": "BingeLink — Legal Movie & TV Discovery",
+  "short_name": "BingeLink",
+  "description": "Discover where to watch any movie, TV show, or anime legally across Netflix, Prime Video, Disney+, Crunchyroll, and Apple TV+.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#080b12",
+  "theme_color": "#080b12",
+  "icons": [
+    {
+      "src": "/static/icons/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["entertainment", "utilities", "movies"]
+}

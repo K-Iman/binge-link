@@ -3,9 +3,20 @@
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <meta name="description" content="{% block meta_description %}BingeLink — Discover movies, TV shows and anime. Find where to stream legally on Netflix, Prime Video, Disney+ and more.{% endblock %}" />
   <title>{% block title %}BingeLink — Discover What to Watch{% endblock %}</title>
+
+  <!-- PWA Manifest & Mobile Web App Configuration -->
+  <link rel="manifest" href="{% url 'core:pwa_manifest' %}" />
+  <meta name="theme-color" content="#080B12" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  
+  <!-- iOS Safari Web App Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="BingeLink" />
+  <link rel="apple-touch-icon" href="{% static 'icons/icon.svg' %}" />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -76,7 +87,7 @@
   {% block extra_head %}{% endblock %}
 </head>
 
-<body class="bg-bg text-text-primary font-sans antialiased min-h-screen flex flex-col selection:bg-accent selection:text-white">
+<body class="bg-bg text-text-primary font-sans antialiased min-h-screen flex flex-col selection:bg-accent selection:text-white pb-16 sm:pb-0">
 
   <!-- ── Liquid Glass Navigation Bar ────────────────────────────────────────── -->
   <header class="sticky top-0 z-50 glass-nav">
@@ -88,35 +99,38 @@
           <!-- Logo -->
           <a href="{% url 'core:home' %}" class="flex items-center gap-3 group flex-shrink-0" id="nav-logo">
             <div class="w-10 h-10 rounded-xl bg-accent-gradient flex items-center justify-center shadow-glow-sm group-hover:shadow-glow group-hover:scale-105 transition-all duration-300">
-              <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M4 6l4-2 4 2 4-2 4 2v14l-4-2-4 2-4-2-4 2V6z"/>
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
-            <span class="text-2xl font-black tracking-tight text-white whitespace-nowrap">
-              Binge<span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-cyan">Link</span>
+            <span class="text-xl sm:text-2xl font-black tracking-tight text-white group-hover:text-accent transition-colors">
+              Binge<span class="text-accent">Link</span>
             </span>
           </a>
 
-          <!-- Desktop Navigation Links -->
-          <nav class="hidden xl:flex items-center gap-1">
-            <a href="{% url 'core:home' %}" id="nav-home"
-               class="px-3.5 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200 whitespace-nowrap">
+          <!-- Primary Links (Desktop) -->
+          <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold">
+            <a href="{% url 'core:home' %}"
+               class="text-text-primary hover:text-accent transition-colors duration-200">
               Home
             </a>
-            <a href="{% url 'core:library' %}" id="nav-library"
-               class="px-3.5 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200 whitespace-nowrap">
+            <a href="{% url 'core:library' %}"
+               class="text-text-secondary hover:text-accent transition-colors duration-200">
               Browse Library
             </a>
-            <a href="{% url 'core:popular' %}" id="nav-popular"
-               class="px-3.5 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200 whitespace-nowrap">
+            <a href="{% url 'core:popular' %}?type=movie"
+               class="text-text-secondary hover:text-accent transition-colors duration-200">
               Popular
             </a>
-            <a href="{% url 'core:popular' %}?type=tv" id="nav-tv"
-               class="px-3.5 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200 whitespace-nowrap">
+            <a href="{% url 'core:popular' %}?type=tv"
+               class="text-text-secondary hover:text-accent transition-colors duration-200">
               TV Shows
             </a>
-            <a href="{% url 'core:browse_genre' 16 %}?type=tv" id="nav-anime"
-               class="px-3.5 py-2 rounded-xl text-sm font-semibold text-text-secondary hover:text-white hover:bg-surface transition-all duration-200 whitespace-nowrap">
+            <a href="{% url 'core:browse_genre' 16 %}?type=tv"
+               class="text-text-secondary hover:text-accent transition-colors duration-200">
               Anime
             </a>
           </nav>
@@ -152,91 +166,75 @@
             <div id="search-dropdown" class="absolute right-0 top-full mt-3 w-80 sm:w-96 z-50 rounded-2xl shadow-2xl"></div>
           </div>
 
-          <!-- Mobile Actions (Search & Menu Buttons) -->
-          <div class="flex items-center gap-2 xl:hidden">
-            <a href="{% url 'core:search' %}" id="mobile-search-btn" aria-label="Search"
-               class="p-2.5 rounded-xl bg-surface border border-border text-text-secondary hover:text-white transition-all sm:hidden">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
-              </svg>
-            </a>
-            <button id="mobile-menu-btn" 
-                    aria-label="Toggle navigation menu"
-                    onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
-                    class="p-2.5 rounded-xl bg-surface border border-border text-text-secondary hover:text-white transition-all">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-              </svg>
-            </button>
-          </div>
-
         </div>
-      </div>
-    </div>
 
-    <!-- Mobile Slide-out Menu -->
-    <div id="mobile-menu" class="hidden xl:hidden border-t border-border/80 bg-bg-secondary/95 backdrop-blur-xl">
-      <div class="max-w-7xl mx-auto px-4 py-4 space-y-2">
-        <a href="{% url 'core:home' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-semibold text-text-secondary hover:text-white hover:bg-surface">
-          <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-          Home
-        </a>
-        <a href="{% url 'core:library' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-semibold text-text-secondary hover:text-white hover:bg-surface">
-          <svg class="w-5 h-5 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-          Browse Library
-        </a>
-        <a href="{% url 'core:popular' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-semibold text-text-secondary hover:text-white hover:bg-surface">
-          <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          Popular Movies
-        </a>
-        <a href="{% url 'core:popular' %}?type=tv" class="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-semibold text-text-secondary hover:text-white hover:bg-surface">
-          <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-          TV Shows
-        </a>
-        <a href="{% url 'core:browse_genre' 16 %}?type=tv" class="flex items-center gap-3 px-4 py-3 rounded-xl text-base font-semibold text-text-secondary hover:text-white hover:bg-surface">
-          <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Anime
-        </a>
       </div>
     </div>
   </header>
 
-  <!-- ── Main Content Area ─────────────────────────────────────────────────── -->
-  <main class="flex-1 w-full">
+  <!-- ── Main Dynamic Content Area ─────────────────────────────────────────── -->
+  <main class="flex-1 w-full" id="main-content">
     {% block content %}{% endblock %}
   </main>
 
+  <!-- ── Native Mobile Bottom Navigation Bar (Appears on Mobile Screens) ────── -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-2xl border-t border-border/80 sm:hidden px-2 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-2xl">
+    <div class="grid grid-cols-4 gap-1 text-center">
+      
+      <a href="{% url 'core:home' %}" class="flex flex-col items-center py-1 px-2 rounded-xl text-text-muted hover:text-white hover:bg-surface-elevated transition-all group">
+        <svg class="w-5 h-5 text-text-muted group-hover:text-accent transition-colors mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        <span class="text-[10px] font-bold">Home</span>
+      </a>
+
+      <a href="{% url 'core:library' %}" class="flex flex-col items-center py-1 px-2 rounded-xl text-text-muted hover:text-white hover:bg-surface-elevated transition-all group">
+        <svg class="w-5 h-5 text-text-muted group-hover:text-emerald-400 transition-colors mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+        </svg>
+        <span class="text-[10px] font-bold">Library</span>
+      </a>
+
+      <a href="{% url 'core:popular' %}" class="flex flex-col items-center py-1 px-2 rounded-xl text-text-muted hover:text-white hover:bg-surface-elevated transition-all group">
+        <svg class="w-5 h-5 text-text-muted group-hover:text-cyan transition-colors mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <span class="text-[10px] font-bold">Popular</span>
+      </a>
+
+      <a href="{% url 'core:browse_genre' 16 %}?type=tv" class="flex flex-col items-center py-1 px-2 rounded-xl text-text-muted hover:text-white hover:bg-surface-elevated transition-all group">
+        <svg class="w-5 h-5 text-text-muted group-hover:text-purple-400 transition-colors mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span class="text-[10px] font-bold">Anime</span>
+      </a>
+
+    </div>
+  </nav>
+
   <!-- ── Footer ────────────────────────────────────────────────────────────── -->
-  <footer class="border-t border-border/80 bg-bg-secondary/40 mt-24">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+  <footer class="bg-surface border-t border-border mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
         
-        <!-- Brand & Description -->
-        <div class="md:col-span-2 space-y-4">
+        <!-- Brand Info -->
+        <div class="space-y-4 md:col-span-2">
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-accent-gradient flex items-center justify-center shadow-glow-sm">
-              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M4 6l4-2 4 2 4-2 4 2v14l-4-2-4 2-4-2-4 2V6z"/>
+            <div class="w-8 h-8 rounded-lg bg-accent-gradient flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
               </svg>
             </div>
-            <span class="text-xl font-black tracking-tight text-white">
-              Binge<span class="text-accent">Link</span>
-            </span>
+            <span class="text-xl font-bold text-white">BingeLink</span>
           </div>
-          <p class="text-text-muted text-sm leading-relaxed max-w-md">
-            BingeLink is your legal streaming guide. Search millions of movies, TV series, and anime to discover official watch options across Netflix, Disney+, Prime Video, Crunchyroll, and Apple TV+.
+          <p class="text-text-muted text-sm max-w-sm leading-relaxed">
+            The ultimate legal streaming discovery platform. Instantly search movies, TV shows, and anime across Netflix, Prime Video, Disney+, Crunchyroll, and Apple TV+.
           </p>
-          <div class="flex items-center gap-3 pt-2">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              100% Legal Streaming Guide
-            </span>
-          </div>
         </div>
 
-        <!-- Navigation Links -->
+        <!-- Quick Links -->
         <div class="space-y-4">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-text-primary">Discovery Hub</h4>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-text-primary">Navigation</h4>
           <ul class="space-y-2.5 text-sm">
             <li><a href="{% url 'core:popular' %}" class="text-text-muted hover:text-accent transition-colors">Popular Movies</a></li>
             <li><a href="{% url 'core:popular' %}?type=tv" class="text-text-muted hover:text-accent transition-colors">Top TV Shows</a></li>
@@ -267,7 +265,20 @@
     </div>
   </footer>
 
+  <!-- PWA ServiceWorker Registration & Dropdown Dismissal Script -->
   <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .then(function (reg) {
+            console.log('BingeLink PWA ServiceWorker registered with scope:', reg.scope);
+          })
+          .catch(function (err) {
+            console.warn('BingeLink PWA ServiceWorker registration failed:', err);
+          });
+      });
+    }
+
     document.addEventListener('click', function (e) {
       const navDropdown = document.getElementById('search-dropdown');
       const heroDropdown = document.getElementById('hero-search-dropdown');

@@ -11,4 +11,7 @@ urlpatterns = [
     path("tv/<int:tv_id>/", views.tv_detail, name="tv_detail"),
     path("popular/", views.popular, name="popular"),
     path("genre/<int:genre_id>/", views.browse_genre, name="browse_genre"),
+    path("manifest.json", views.pwa_manifest, name="pwa_manifest"),
+    path("sw.js", views.pwa_serviceworker, name="pwa_serviceworker"),
+    path("offline/", views.offline_fallback, name="offline_fallback"),
 ]
