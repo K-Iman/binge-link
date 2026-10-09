@@ -130,9 +130,3 @@ TMDB_IMAGE_BASE_URL = "https://image.tmdb.org/t/p"
 - **Data Attribution**: Metadata, images, backdrops, and cast info provided by [The Movie Database (TMDB)](https://www.themoviedb.org/). This product uses the TMDB API but is not endorsed or certified by TMDB.
 - **Provider Information**: Streaming availability data indexed via JustWatch.
 - **Legal Compliance**: BingeLink strictly indexes official streaming options and does not host, upload, or distribute copyrighted video files.
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License**.
